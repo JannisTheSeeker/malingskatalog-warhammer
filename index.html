@@ -104,9 +104,14 @@
         display: none;
     }
 }
+
+td[contenteditable="true"] {
+  background-color: #333333;
+  border: 1px solid #ffd700;
+}
 </style>
 </head>
-<body>
+<body><div id="editModeBanner" style="display:none;background:#ffd700;color:#000;padding:0.75rem;font-weight:bold;text-align:center;border-radius:8px;margin-bottom:1rem;">✏️ Redigeringsmodus aktiv</div>
 <div style="margin-bottom: 1rem;">
 <input id="searchInput" placeholder="🔍 Søk i katalogen..." style="width: 100%; padding: 0.75rem; font-size: 1rem; border: 2px solid #ffd700; 
                 background-color: #1e1e1e; color: #e0e0e0; border-radius: 8px;" type="text"/>
@@ -158,7 +163,7 @@
    </button>
 <span id="unlockMessage" style="margin-left:1rem;color:#aaa;">
 </span>
-</div>
+<button onclick="resetTable()">🔄 Tilbakestill til original</button></div>
 <table id="paintTable">
 <thead>
 <tr>
@@ -1514,82 +1519,57 @@
    </small>
 </div>
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  let currentCategory = "ALL";
-  let currentStatus = "ALL";
-  let currentSearch = "";
+window.unlockEditing = function() {
+  const password = document.getElementById("editPassword").value;
+  const message = document.getElementById("unlockMessage");
+  if (password === "Hansa") {
+    message.textContent = "Redigering aktivert.";
+    enableEditing();
+    alert("🔓 Du har låst opp redigering!");
+  } else {
+    message.textContent = "Feil passord.";
+  }
+};
 
-  document.getElementById("searchInput").addEventListener("input", function () {
-    currentSearch = this.value.toLowerCase();
-    applyFilters();
+function enableEditing() {
+  const cells = document.querySelectorAll("#paintTable tbody td");
+  cells.forEach(cell => {
+    if (cell.cellIndex !== 0) {
+      cell.setAttribute("contenteditable", "true");
+    }
   });
 
-  window.filterCategory = function(category) {
-    currentCategory = category;
-    setActiveButton("filterButtons", category);
-    applyFilters();
-  }
-
-  window.filterStatus = function(status) {
-    currentStatus = status;
-    setActiveButton("statusButtons", status);
-    applyFilters();
-  }
-
-  function setActiveButton(groupId, value) {
-    const buttons = document.querySelectorAll(`#${groupId} button`);
-    buttons.forEach(btn => {
-      if (btn.textContent.includes(value) || (value === "ALL" && btn.textContent.includes("alle"))) {
-        btn.classList.add("active");
-      } else {
-        btn.classList.remove("active");
-      }
+  // Last inn lagrede endringer hvis de finnes
+  const savedData = JSON.parse(localStorage.getItem("paintData") || "[]");
+  const rows = document.querySelectorAll("#paintTable tbody tr");
+  if (savedData.length === rows.length) {
+    rows.forEach((row, i) => {
+      const tds = row.querySelectorAll("td");
+      savedData[i].forEach((val, j) => {
+        if (j < tds.length) tds[j].textContent = val;
+      });
     });
   }
 
-  function applyFilters() {
-    const rows = document.querySelectorAll("#paintTable tbody tr");
-    rows.forEach(row => {
-      const cat = row.querySelector("td[data-label='Kategori']")?.textContent.trim().toUpperCase() || "";
-      const status = row.querySelector("td[data-label='Status']")?.textContent.trim() || "";
-      const text = row.textContent.toLowerCase();
-
-      const matchCategory = currentCategory === "ALL" || cat === currentCategory;
-      const matchStatus = currentStatus === "ALL" || status.includes(currentStatus);
-      const matchSearch = currentSearch === "" || text.includes(currentSearch);
-
-      row.style.display = (matchCategory && matchStatus && matchSearch) ? "" : "none";
+  // Lagre til localStorage ved endringer
+  document.querySelectorAll("#paintTable tbody td").forEach(cell => {
+    cell.addEventListener("blur", () => {
+      const allRows = Array.from(document.querySelectorAll("#paintTable tbody tr")).map(row =>
+        Array.from(row.querySelectorAll("td")).map(cell => cell.textContent.trim())
+      );
+      localStorage.setItem("paintData", JSON.stringify(allRows));
     });
-  }
+  });
+}
 
-  window.unlockEditing = function() {
-    const password = document.getElementById("editPassword").value;
-    const message = document.getElementById("unlockMessage");
-    if (password === "dinhemmeligekode") {
-      message.textContent = "Redigering aktivert.";
-    } else {
-      message.textContent = "Feil passord.";
-    }
+function resetTable() {
+  if (confirm("Er du sikker på at du vil tilbakestille alle endringer?")) {
+    localStorage.removeItem("paintData");
+    location.reload();
   }
+}
 
-  window.downloadCSV = function() {
-    const rows = document.querySelectorAll("#paintTable tr");
-    const csv = Array.from(rows).map(row =>
-      Array.from(row.querySelectorAll("th, td"))
-        .map(cell => '"' + cell.textContent.trim() + '"')
-        .join(',')
-    ).join("\n");
-
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement("a");
-    link.setAttribute("href", URL.createObjectURL(blob));
-    link.setAttribute("download", "malingskatalog.csv");
-    link.style.display = "none";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
-});
+  document.getElementById("editModeBanner").style.display = "block";
 </script>
 </body>
 </html>
