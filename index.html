@@ -1,11 +1,12 @@
-
 <!DOCTYPE html>
 <html lang="no">
-<head>
-    <meta charset="UTF-8">
-    <title>Malingskatalog – Warhammer 40K</title>
-    <style>
-        body {
+ <head>
+  <meta charset="utf-8"/>
+  <title>
+   Malingskatalog – Warhammer 40K
+  </title>
+  <style>
+   body {
             background-color: #121212;
             color: #f0f0f0;
             font-family: 'Segoe UI', sans-serif;
@@ -72,180 +73,1772 @@
         th {
             background-color: #222;
         }
-</style>
-</head>
-<body>
-    <h1>🎨 Malingskatalog – Warhammer 40K</h1>
-
-<div id="statusButtons" style="margin-bottom: 1rem;">
-    <button onclick="filterStatus('ALL')">Vis alle status</button>
-    <button onclick="filterStatus('✅')">✅ Har</button>
-    <button onclick="filterStatus('❌')">❌ Mangler</button>
-</div>
-
-<div id="filterButtons" style="margin-bottom: 1rem;">
-<button onclick="filterCategory('ALL')">Vis alle</button>
-<button onclick="filterCategory('BASE')">BASE</button>
-<button onclick="filterCategory('CONTRAST')">CONTRAST</button>
-<button onclick="filterCategory('LAYER')">LAYER</button>
-<button onclick="filterCategory('OTHER')">OTHER</button>
-<button onclick="filterCategory('SHADE')">SHADE</button>
-<button onclick="filterCategory('SPRAY')">SPRAY</button>
-<button onclick="filterCategory('TECHNICAL')">TECHNICAL</button>
-</div>
-
-    <input type="text" id="searchInput" placeholder="🔍 Søk etter maling eller kategori...">
-    
-<div style="margin: 1rem 0;">
-    <input type="password" id="editPassword" placeholder="🔒 Skriv inn passord for å redigere" style="padding: 0.5rem; max-width: 300px;">
-    <button onclick="unlockEditing()">Lås opp redigering</button>
-<span id="unlockMessage" style="margin-left:1rem;color:#aaa;"></span>
-</div>
-
-<table id="paintTable">
-        <thead>
-            <tr>
-                <th>Kategori</th>
-                <th>Maling</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#000000'></span>Abaddon Black</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#FFCC00'></span>Averland Sunset</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#A97444'></span>Balthasar Gold</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#A36C58'></span>Bugmans Glow</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(198,166,105)'></span>Celestra Grey</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#F2F2F2'></span>Corax White</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(198,41,145)'></span>Corvus Black</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(204,236,23)'></span>Daemonette Hide</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#6B7755'></span>Death Guard Green</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#3A2E23'></span>Dryad Bark</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(224,110,118)'></span>Grey Seer</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(166,207,41)'></span>Iron Hands Steel</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(81,106,74)'></span>Iron Warriors</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(95,61,150)'></span>Jokaero Orange</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#1C2E5B'></span>Kantor Blue</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#58111A'></span>Khorne Red</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#999999'></span>Leadbelcher</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#20362C'></span>Lupercal Green</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#1E3A77'></span>Macragge Blue</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#555555'></span>Mechanicus Standard Grey</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#8B0000'></span>Mephiston Red</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(111,196,114)'></span>Morghast Bone</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#6B4423'></span>Mournfang Brown</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(161,102,158)'></span>Naggaroth Night</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#6C9B2C'></span>Orruk Flesh</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(33,182,219)'></span>Rakarth Flesh</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#C7A740'></span>Retributor Armour</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(81,96,65)'></span>Rhinox Hide</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(49,92,207)'></span>Runelord Brass</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#8E3A59'></span>Screamer Pink</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#924E2E'></span>Screaming Bell</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#635C48'></span>Steel Legion Drab</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(234,248,72)'></span>Thondia Brown</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(161,41,243)'></span>Thousand Sons Blue</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(16,136,31)'></span>Waaagh! Flesh</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(177,234,171)'></span>Warplock Bronze</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#C2B280'></span>Zandri Dust</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#53354a'><td data-label='Kategori'>CONTRAST</td><td data-label='Maling'><span class='swatch' style='background-color:#FFD700'></span>Iyanden Yellow</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#53354a'><td data-label='Kategori'>CONTRAST</td><td data-label='Maling'><span class='swatch' style='background-color:#6B4F7C'></span>Magos Purple</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#53354a'><td data-label='Kategori'>CONTRAST</td><td data-label='Maling'><span class='swatch' style='background-color:#B6A275'></span>Skeleton Horde</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#53354a'><td data-label='Kategori'>CONTRAST</td><td data-label='Maling'><span class='swatch' style='background-color:#A74176'></span>Volupus Pink</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#D0D0D0'></span>Administratum Grey</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(33,159,132)'></span>Ahriman Blue</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(147,248,185)'></span>Alaitoc Blue</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(33,49,70)'></span>Auric Armour Gold</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(44,51,18)'></span>Baneblade Brown</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(113,94,169)'></span>Brass Scorpion</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#DEB7A0'></span>Cadian Fleshtone</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#2B4E93'></span>Calgar Blue</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(225,236,136)'></span>Dark Reaper</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#888888'></span>Dawnstone</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(50,143,107)'></span>Deathclaw Brown</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(111,209,192)'></span>Doombull Brown</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(122,202,236)'></span>Emperors Children</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(204,226,84)'></span>Eshin Grey</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#C12126'></span>Evil Sunz Scarlet</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(115,25,248)'></span>Fenrisian Grey</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(143,102,230)'></span>Fire Dragon Bright</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#FFE800'></span>Flash Gitz Yellow</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#EECDE3'></span>Fulgrim Pink</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(66,68,59)'></span>Gehenna's Gold</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(145,28,167)'></span>Genestealer Purple</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(66,112,203)'></span>Gorthor Brown</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(195,34,142)'></span>Hoeth Blue</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(5,59,123)'></span>Ironbreaker</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(92,2,0)'></span>Kabalite Green</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(163,149,251)'></span>Karak Stone</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#F0C8A0'></span>Kislev Flesh</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(127,141,212)'></span>Krieg Khaki</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#E0C870'></span>Liberator Gold</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#B0C26E'></span>Nurgling Green</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(32,66,6)'></span>Ogryn Camo</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(59,102,214)'></span>Pallid Wych Flesh</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(167,158,154)'></span>Phalanx Yellow</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#D67AB1'></span>Pink Horror</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(202,185,196)'></span>Russ Grey</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#EFE6C4'></span>Screaming Skull</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(202,148,97)'></span>Skavenblight Dinge</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(24,123,230)'></span>Skrag Brown</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(70,18,72)'></span>Slaanesh Grey</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#2B5C4E'></span>Sons of Horus Green</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(192,213,190)'></span>Stormvermin Fur</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(17,21,243)'></span>Sybarite Green</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(240,105,156)'></span>Sycorax Bronze</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(75,115,75)'></span>Tallarn Sand</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#3EB5C4'></span>Temple Guard Blue</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(220,28,208)'></span>Thunderhawk Blue</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(73,68,27)'></span>Troll Slayer Orange</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(123,204,199)'></span>Ulthuan Grey</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(194,38,86)'></span>Ushabti Bone</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(53,100,10)'></span>Warboss Green</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(17,183,83)'></span>Wazdakka Red</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(121,129,186)'></span>White Scar</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(163,173,61)'></span>Wild Rider Red</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#462D75'></span>Xereus Purple</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(97,56,67)'></span>Yriel Yellow</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1e1e1e'><td data-label='Kategori'>OTHER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(210,208,248)'></span>Matt White</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#0f3460'><td data-label='Kategori'>SHADE</td><td data-label='Maling'><span class='swatch' style='background-color:#4B3621'></span>Agrax Earthshade</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#0f3460'><td data-label='Kategori'>SHADE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(242,82,183)'></span>Athonian Camoshade</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#0f3460'><td data-label='Kategori'>SHADE</td><td data-label='Maling'><span class='swatch' style='background-color:#4A775C'></span>Biel Tan Green</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#0f3460'><td data-label='Kategori'>SHADE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(19,55,77)'></span>Biel-Tan Green</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#0f3460'><td data-label='Kategori'>SHADE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(74,147,210)'></span>Carroburg Crimson</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#0f3460'><td data-label='Kategori'>SHADE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(229,139,178)'></span>Casandora Yellow</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#0f3460'><td data-label='Kategori'>SHADE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(203,252,252)'></span>Coelia Greenshade</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#0f3460'><td data-label='Kategori'>SHADE</td><td data-label='Maling'><span class='swatch' style='background-color:#2C3F73'></span>Drakenhof Nightshade</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#0f3460'><td data-label='Kategori'>SHADE</td><td data-label='Maling'><span class='swatch' style='background-color:#422153'></span>Druchii Violet</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#0f3460'><td data-label='Kategori'>SHADE</td><td data-label='Maling'><span class='swatch' style='background-color:#1E1E1E'></span>Nuln Oil</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#0f3460'><td data-label='Kategori'>SHADE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(211,78,147)'></span>Reikland Fleshshade</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#0f3460'><td data-label='Kategori'>SHADE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(69,50,123)'></span>Seraphim Sepia</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1e1e1e'><td data-label='Kategori'>SPRAY</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(132,40,243)'></span>Chaos Black</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#1e1e1e'><td data-label='Kategori'>SPRAY</td><td data-label='Maling'><span class='swatch' style='background-color:#EAD6BA'></span>Wraithbone</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#3e2c41'><td data-label='Kategori'>TECHNICAL</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(210,195,150)'></span>Astrogranite</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#3e2c41'><td data-label='Kategori'>TECHNICAL</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(101,73,109)'></span>Nihilakh Oxide</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#3e2c41'><td data-label='Kategori'>TECHNICAL</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(35,159,141)'></span>Skarsnik Green</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#3e2c41'><td data-label='Kategori'>TECHNICAL</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(164,27,70)'></span>Skullcrusher Brass</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#3e2c41'><td data-label='Kategori'>TECHNICAL</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(1,92,93)'></span>Squig Orange</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#3e2c41'><td data-label='Kategori'>TECHNICAL</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(51,108,182)'></span>Stirland Mud</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#3e2c41'><td data-label='Kategori'>TECHNICAL</td><td data-label='Maling'><span class='swatch' style='background-color:#D8D8D8'></span>Stormhost Silver</td><td data-label='Status' class='har'>✅ Har</td></tr>
-<tr style='background-color:#3e2c41'><td data-label='Kategori'>TECHNICAL</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(230,159,199)'></span>Tuskgor Fur</td><td data-label='Status' class='har'>✅ Har</td></tr>
-</tbody>
-    </table>
-
-<div style="margin-top: 1rem;">
-    <button onclick="downloadCSV()">💾 Last ned som CSV</button>
-    <small style="margin-left: 1rem; color: #aaa;">Endringer må lagres manuelt via GitHub.</small>
-</div>
-
-
-    
-
-
-
-
-<script>
-let editingUnlocked = false;
+  </style>
+ </head>
+ <body>
+  <h1>
+   🎨 Malingskatalog – Warhammer 40K
+  </h1>
+  <div id="statusButtons" style="margin-bottom: 1rem;">
+   <button onclick="filterStatus('ALL')">
+    Vis alle status
+   </button>
+   <button onclick="filterStatus('✅')">
+    ✅ Har
+   </button>
+   <button onclick="filterStatus('❌')">
+    ❌ Mangler
+   </button>
+  </div>
+  <div id="filterButtons" style="margin-bottom: 1rem;">
+   <button onclick="filterCategory('ALL')">
+    Vis alle
+   </button>
+   <button onclick="filterCategory('BASE')">
+    BASE
+   </button>
+   <button onclick="filterCategory('CONTRAST')">
+    CONTRAST
+   </button>
+   <button onclick="filterCategory('LAYER')">
+    LAYER
+   </button>
+   <button onclick="filterCategory('OTHER')">
+    OTHER
+   </button>
+   <button onclick="filterCategory('SHADE')">
+    SHADE
+   </button>
+   <button onclick="filterCategory('SPRAY')">
+    SPRAY
+   </button>
+   <button onclick="filterCategory('TECHNICAL')">
+    TECHNICAL
+   </button>
+  </div>
+  <input id="searchInput" placeholder="🔍 Søk etter maling eller kategori..." type="text"/>
+  <div style="margin: 1rem 0;">
+   <input id="editPassword" placeholder="🔒 Skriv inn passord for å redigere" style="padding: 0.5rem; max-width: 300px;" type="password"/>
+   <button onclick="unlockEditing()">
+    Lås opp redigering
+   </button>
+   <span id="unlockMessage" style="margin-left:1rem;color:#aaa;">
+   </span>
+  </div>
+  <table id="paintTable">
+   <thead>
+    <tr>
+     <th>
+      Kategori
+     </th>
+     <th>
+      Maling
+     </th>
+     <th>
+      Status
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #0d0d0d; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#000000">
+      </span>
+      Abaddon Black
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #ffb400; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#FFCC00">
+      </span>
+      Averland Sunset
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #916c41; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#A97444">
+      </span>
+      Balthasar Gold
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #a16a5e; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#A36C58">
+      </span>
+      Bugmans Glow
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(198,166,105)">
+      </span>
+      Celestra Grey
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #e6e6e6; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#F2F2F2">
+      </span>
+      Corax White
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #181818; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(198,41,145)">
+      </span>
+      Corvus Black
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #866192; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(204,236,23)">
+      </span>
+      Daemonette Hide
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #697e52; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#6B7755">
+      </span>
+      Death Guard Green
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #4b3a28; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#3A2E23">
+      </span>
+      Dryad Bark
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(224,110,118)">
+      </span>
+      Grey Seer
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #7f8c8d; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(166,207,41)">
+      </span>
+      Iron Hands Steel
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #6b6b6b; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(81,106,74)">
+      </span>
+      Iron Warriors
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #f07900; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(95,61,150)">
+      </span>
+      Jokaero Orange
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #1c3b68; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#1C2E5B">
+      </span>
+      Kantor Blue
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #6a1f1c; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#58111A">
+      </span>
+      Khorne Red
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #8a8c8d; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#999999">
+      </span>
+      Leadbelcher
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #0e3a28; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#20362C">
+      </span>
+      Lupercal Green
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #274e86; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#1E3A77">
+      </span>
+      Macragge Blue
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #3f3f3f; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#555555">
+      </span>
+      Mechanicus Standard Grey
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #b92428; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#8B0000">
+      </span>
+      Mephiston Red
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #dbcd9e; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(111,196,114)">
+      </span>
+      Morghast Bone
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #6d4c31; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#6B4423">
+      </span>
+      Mournfang Brown
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #2e1e3a; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(161,102,158)">
+      </span>
+      Naggaroth Night
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #6e924f; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#6C9B2C">
+      </span>
+      Orruk Flesh
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(33,182,219)">
+      </span>
+      Rakarth Flesh
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #c39738; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#C7A740">
+      </span>
+      Retributor Armour
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #402e1e; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(81,96,65)">
+      </span>
+      Rhinox Hide
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(49,92,207)">
+      </span>
+      Runelord Brass
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:#8E3A59">
+      </span>
+      Screamer Pink
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #a55e2b; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#924E2E">
+      </span>
+      Screaming Bell
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #6e6243; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#635C48">
+      </span>
+      Steel Legion Drab
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(234,248,72)">
+      </span>
+      Thondia Brown
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(161,41,243)">
+      </span>
+      Thousand Sons Blue
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(16,136,31)">
+      </span>
+      Waaagh! Flesh
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(177,234,171)">
+      </span>
+      Warplock Bronze
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1a1a2e">
+     <td data-label="Kategori">
+      BASE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #c2b280; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#C2B280">
+      </span>
+      Zandri Dust
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#53354a">
+     <td data-label="Kategori">
+      CONTRAST
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #f6c842; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#FFD700">
+      </span>
+      Iyanden Yellow
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#53354a">
+     <td data-label="Kategori">
+      CONTRAST
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:#6B4F7C">
+      </span>
+      Magos Purple
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#53354a">
+     <td data-label="Kategori">
+      CONTRAST
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:#B6A275">
+      </span>
+      Skeleton Horde
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#53354a">
+     <td data-label="Kategori">
+      CONTRAST
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #9a3056; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#A74176">
+      </span>
+      Volupus Pink
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #c3c3c3; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#D0D0D0">
+      </span>
+      Administratum Grey
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(33,159,132)">
+      </span>
+      Ahriman Blue
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(147,248,185)">
+      </span>
+      Alaitoc Blue
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(33,49,70)">
+      </span>
+      Auric Armour Gold
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(44,51,18)">
+      </span>
+      Baneblade Brown
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(113,94,169)">
+      </span>
+      Brass Scorpion
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #d6a470; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#DEB7A0">
+      </span>
+      Cadian Fleshtone
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #477abf; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#2B4E93">
+      </span>
+      Calgar Blue
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(225,236,136)">
+      </span>
+      Dark Reaper
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #a5a5a5; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#888888">
+      </span>
+      Dawnstone
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #c78454; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(50,143,107)">
+      </span>
+      Deathclaw Brown
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #5a3226; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(111,209,192)">
+      </span>
+      Doombull Brown
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #d14aad; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(122,202,236)">
+      </span>
+      Emperors Children
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(204,226,84)">
+      </span>
+      Eshin Grey
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #e43a2f; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#C12126">
+      </span>
+      Evil Sunz Scarlet
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #9bbfd9; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(115,25,248)">
+      </span>
+      Fenrisian Grey
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #ff884a; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(143,102,230)">
+      </span>
+      Fire Dragon Bright
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #fff75b; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#FFE800">
+      </span>
+      Flash Gitz Yellow
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #f6b4c5; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#EECDE3">
+      </span>
+      Fulgrim Pink
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(66,68,59)">
+      </span>
+      Gehenna's Gold
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #7356a2; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(145,28,167)">
+      </span>
+      Genestealer Purple
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(66,112,203)">
+      </span>
+      Gorthor Brown
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(195,34,142)">
+      </span>
+      Hoeth Blue
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(5,59,123)">
+      </span>
+      Ironbreaker
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(92,2,0)">
+      </span>
+      Kabalite Green
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #b49d71; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(163,149,251)">
+      </span>
+      Karak Stone
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #e7c7a1; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#F0C8A0">
+      </span>
+      Kislev Flesh
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(127,141,212)">
+      </span>
+      Krieg Khaki
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:#E0C870">
+      </span>
+      Liberator Gold
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #a5c286; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#B0C26E">
+      </span>
+      Nurgling Green
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(32,66,6)">
+      </span>
+      Ogryn Camo
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #f5efdf; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(59,102,214)">
+      </span>
+      Pallid Wych Flesh
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #fffb8d; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(167,158,154)">
+      </span>
+      Phalanx Yellow
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #e28ca5; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#D67AB1">
+      </span>
+      Pink Horror
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #7e9dad; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(202,185,196)">
+      </span>
+      Russ Grey
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #f5f1c4; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#EFE6C4">
+      </span>
+      Screaming Skull
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(202,148,97)">
+      </span>
+      Skavenblight Dinge
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #965e3f; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(24,123,230)">
+      </span>
+      Skrag Brown
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #bbb6cc; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(70,18,72)">
+      </span>
+      Slaanesh Grey
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:#2B5C4E">
+      </span>
+      Sons of Horus Green
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(192,213,190)">
+      </span>
+      Stormvermin Fur
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(17,21,243)">
+      </span>
+      Sybarite Green
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(240,105,156)">
+      </span>
+      Sycorax Bronze
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #c2a86f; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(75,115,75)">
+      </span>
+      Tallarn Sand
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #47aba2; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#3EB5C4">
+      </span>
+      Temple Guard Blue
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(220,28,208)">
+      </span>
+      Thunderhawk Blue
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #f96b1c; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(73,68,27)">
+      </span>
+      Troll Slayer Orange
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #cdd6db; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(123,204,199)">
+      </span>
+      Ulthuan Grey
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #d7cfa3; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(194,38,86)">
+      </span>
+      Ushabti Bone
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #82b96b; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(53,100,10)">
+      </span>
+      Warboss Green
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(17,183,83)">
+      </span>
+      Wazdakka Red
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #ffffff; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(121,129,186)">
+      </span>
+      White Scar
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #ff5340; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(163,173,61)">
+      </span>
+      Wild Rider Red
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #4b2e6f; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#462D75">
+      </span>
+      Xereus Purple
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#16213e">
+     <td data-label="Kategori">
+      LAYER
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #f7d560; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(97,56,67)">
+      </span>
+      Yriel Yellow
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1e1e1e">
+     <td data-label="Kategori">
+      OTHER
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(210,208,248)">
+      </span>
+      Matt White
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#0f3460">
+     <td data-label="Kategori">
+      SHADE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #3e2f25; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#4B3621">
+      </span>
+      Agrax Earthshade
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#0f3460">
+     <td data-label="Kategori">
+      SHADE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #5c6941; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(242,82,183)">
+      </span>
+      Athonian Camoshade
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#0f3460">
+     <td data-label="Kategori">
+      SHADE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #4a6648; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#4A775C">
+      </span>
+      Biel Tan Green
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#0f3460">
+     <td data-label="Kategori">
+      SHADE
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(19,55,77)">
+      </span>
+      Biel-Tan Green
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#0f3460">
+     <td data-label="Kategori">
+      SHADE
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(74,147,210)">
+      </span>
+      Carroburg Crimson
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#0f3460">
+     <td data-label="Kategori">
+      SHADE
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(229,139,178)">
+      </span>
+      Casandora Yellow
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#0f3460">
+     <td data-label="Kategori">
+      SHADE
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(203,252,252)">
+      </span>
+      Coelia Greenshade
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#0f3460">
+     <td data-label="Kategori">
+      SHADE
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:#2C3F73">
+      </span>
+      Drakenhof Nightshade
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#0f3460">
+     <td data-label="Kategori">
+      SHADE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #5b3b75; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#422153">
+      </span>
+      Druchii Violet
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#0f3460">
+     <td data-label="Kategori">
+      SHADE
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #212121; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#1E1E1E">
+      </span>
+      Nuln Oil
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#0f3460">
+     <td data-label="Kategori">
+      SHADE
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(211,78,147)">
+      </span>
+      Reikland Fleshshade
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#0f3460">
+     <td data-label="Kategori">
+      SHADE
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(69,50,123)">
+      </span>
+      Seraphim Sepia
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1e1e1e">
+     <td data-label="Kategori">
+      SPRAY
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(132,40,243)">
+      </span>
+      Chaos Black
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#1e1e1e">
+     <td data-label="Kategori">
+      SPRAY
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:#EAD6BA">
+      </span>
+      Wraithbone
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#3e2c41">
+     <td data-label="Kategori">
+      TECHNICAL
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(210,195,150)">
+      </span>
+      Astrogranite
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#3e2c41">
+     <td data-label="Kategori">
+      TECHNICAL
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(101,73,109)">
+      </span>
+      Nihilakh Oxide
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#3e2c41">
+     <td data-label="Kategori">
+      TECHNICAL
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(35,159,141)">
+      </span>
+      Skarsnik Green
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#3e2c41">
+     <td data-label="Kategori">
+      TECHNICAL
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(164,27,70)">
+      </span>
+      Skullcrusher Brass
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#3e2c41">
+     <td data-label="Kategori">
+      TECHNICAL
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #f05a28; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:rgb(1,92,93)">
+      </span>
+      Squig Orange
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#3e2c41">
+     <td data-label="Kategori">
+      TECHNICAL
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(51,108,182)">
+      </span>
+      Stirland Mud
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#3e2c41">
+     <td data-label="Kategori">
+      TECHNICAL
+     </td>
+     <td data-label="Maling">
+      <div class="swatch" style="background-color: #e6e8e8; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+      </div>
+      <span class="swatch" style="background-color:#D8D8D8">
+      </span>
+      Stormhost Silver
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+    <tr style="background-color:#3e2c41">
+     <td data-label="Kategori">
+      TECHNICAL
+     </td>
+     <td data-label="Maling">
+      <span class="swatch" style="background-color:rgb(230,159,199)">
+      </span>
+      Tuskgor Fur
+     </td>
+     <td class="har" data-label="Status">
+      ✅ Har
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <div style="margin-top: 1rem;">
+   <button onclick="downloadCSV()">
+    💾 Last ned som CSV
+   </button>
+   <small style="margin-left: 1rem; color: #aaa;">
+    Endringer må lagres manuelt via GitHub.
+   </small>
+  </div>
+  <script>
+   let editingUnlocked = false;
 
 function unlockEditing() {
     const pw = document.getElementById("editPassword").value;
@@ -342,7 +1935,6 @@ window.onload = function () {
         });
     });
 };
-</script>
-
-</body>
+  </script>
+ </body>
 </html>
