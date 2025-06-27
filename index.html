@@ -109,6 +109,22 @@ td[contenteditable="true"] {
   background-color: #333333;
   border: 1px solid #ffd700;
 }
+
+select {
+  font-size: 1rem;
+  padding: 6px 10px;
+  background-color: #1e1e1e;
+  color: #fff;
+  border: 1px solid #888;
+  border-radius: 5px;
+}
+@media (max-width: 600px) {
+  select {
+    width: 100%;
+    font-size: 1.1rem;
+    padding: 10px;
+  }
+}
 </style>
 </head>
 <body><div id="editModeBanner" style="display:none;background:#ffd700;color:#000;padding:0.75rem;font-weight:bold;text-align:center;border-radius:8px;margin-bottom:1rem;">✏️ Redigeringsmodus aktiv</div>
@@ -152,7 +168,7 @@ td[contenteditable="true"] {
 <button onclick="filterCategory('TECHNICAL')">
     TECHNICAL
    </button>
-</div><div style="margin: 1rem 0; font-size: 0.9rem; color: #999;">
+</div><button id="addRowBtn" onclick="addNewRow()" style="display:none;margin-left:1rem;">➕ Legg til ny maling</button><div style="margin: 1rem 0; font-size: 0.9rem; color: #999;">
 <input id="editPassword" placeholder="🔒 Skriv inn passord for å redigere" style="padding: 0.5rem; max-width: 300px;" type="password"/>
 <button onclick="unlockEditing()">
     Lås opp redigering
@@ -1360,6 +1376,37 @@ function resetTable() {
     location.reload();
   }
 }
+
+document.getElementById("addRowBtn").style.display = "inline-block";
+
+window.addNewRow = function() {
+  const table = document.getElementById("paintTable").querySelector("tbody");
+  const row = document.createElement("tr");
+
+  const kategoriCell = document.createElement("td");
+  kategoriCell.textContent = "BASE";
+  kategoriCell.setAttribute("contenteditable", "true");
+
+  const malingCell = document.createElement("td");
+  malingCell.textContent = "Ny maling";
+  malingCell.setAttribute("contenteditable", "true");
+
+  const statusCell = document.createElement("td");
+  const select = document.createElement("select");
+  select.innerHTML = '<option value="✅ Har">✅ Har</option><option value="❌ Mangler" selected>❌ Mangler</option>';
+  select.addEventListener("change", () => {
+    statusCell.childNodes[0].nodeValue = select.value + " ";
+    saveToLocalStorage();
+  });
+  statusCell.append("❌ Mangler ", select);
+
+  row.appendChild(kategoriCell);
+  row.appendChild(malingCell);
+  row.appendChild(statusCell);
+  table.appendChild(row);
+
+  saveToLocalStorage();
+};
 </script>
 </body>
 </html>
