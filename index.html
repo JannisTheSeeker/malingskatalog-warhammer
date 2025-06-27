@@ -1443,17 +1443,14 @@ window.addNewRow = function() {
   saveToLocalStorage();
 };
 
-function updateRowNumbers() {
-  const rows = document.querySelectorAll("#paintTable tbody tr");
-  let counters = {};
-  rows.forEach(row => {
-    const kategori = row.cells[1].textContent.trim().toUpperCase();
-    if (!counters[kategori]) counters[kategori] = 1;
-    else counters[kategori]++;
-    row.cells[0].textContent = counters[kategori];
-  });
-}
-updateRowNumbers();
+
+document.addEventListener("DOMContentLoaded", () => {
+  updateRowNumbers();
+
+  // Oppdater row numbers ved søk/filter også
+  const observer = new MutationObserver(updateRowNumbers);
+  observer.observe(document.querySelector("#paintTable tbody"), { childList: true, subtree: true });
+});
 </script>
 </body>
 </html>
