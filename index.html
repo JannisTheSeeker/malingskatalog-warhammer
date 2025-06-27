@@ -1295,34 +1295,62 @@ window.unlockEditing = function() {
 };
 
 function enableEditing() {
-  const cells = document.querySelectorAll("#paintTable tbody td");
-  cells.forEach(cell => {
-    if (cell.cellIndex !== 0) {
-      cell.setAttribute("contenteditable", "true");
+  const rows = document.querySelectorAll("#paintTable tbody tr");
+  rows.forEach(row => {
+    const cells = row.querySelectorAll("td");
+    if (cells.length >= 3) {
+      // Aktiver contenteditable for Kategori og Maling
+      cells[0].setAttribute("contenteditable", "true");
+      cells[1].setAttribute("contenteditable", "true");
+
+      // Vis dropdown for Status
+      const select = cells[2].querySelector("select");
+      if (select) {
+        select.style.display = "inline-block";
+        select.addEventListener("change", () => {
+          cells[2].childNodes[0].nodeValue = select.value + " ";
+          saveToLocalStorage();
+        });
+      }
     }
   });
 
-  // Last inn lagrede endringer hvis de finnes
+  // Last lagrede data fra localStorage
   const savedData = JSON.parse(localStorage.getItem("paintData") || "[]");
-  const rows = document.querySelectorAll("#paintTable tbody tr");
   if (savedData.length === rows.length) {
     rows.forEach((row, i) => {
-      const tds = row.querySelectorAll("td");
-      savedData[i].forEach((val, j) => {
-        if (j < tds.length) tds[j].textContent = val;
-      });
+      const cells = row.querySelectorAll("td");
+      if (cells.length >= 3) {
+        cells[0].textContent = savedData[i][0];
+        cells[1].textContent = savedData[i][1];
+        const val = savedData[i][2];
+        const select = cells[2].querySelector("select");
+        if (select) {
+          select.value = val;
+          cells[2].childNodes[0].nodeValue = val + " ";
+        }
+      }
     });
   }
 
-  // Lagre til localStorage ved endringer
+  // Lagre endringer ved blur
   document.querySelectorAll("#paintTable tbody td").forEach(cell => {
     cell.addEventListener("blur", () => {
-      const allRows = Array.from(document.querySelectorAll("#paintTable tbody tr")).map(row =>
-        Array.from(row.querySelectorAll("td")).map(cell => cell.textContent.trim())
-      );
-      localStorage.setItem("paintData", JSON.stringify(allRows));
+      saveToLocalStorage();
     });
   });
+}
+
+function saveToLocalStorage() {
+  const rows = document.querySelectorAll("#paintTable tbody tr");
+  const allRows = Array.from(rows).map(row =>
+    Array.from(row.querySelectorAll("td")).map(cell => {
+      const select = cell.querySelector("select");
+      if (select) return select.value;
+      return cell.textContent.trim();
+    })
+  );
+  localStorage.setItem("paintData", JSON.stringify(allRows));
 }
 
 function resetTable() {
@@ -1331,56 +1359,6 @@ function resetTable() {
     document.getElementById("editModeBanner").style.display = "none";
     location.reload();
   }
-}
-
-let currentCategory = "ALL";
-let currentStatus = "ALL";
-let currentSearch = "";
-
-document.getElementById("searchInput").addEventListener("input", function () {
-  currentSearch = this.value.toLowerCase();
-  applyFilters();
-});
-
-function filterCategory(category) {
-  currentCategory = category;
-  applyFilters();
-}
-
-function filterStatus(status) {
-  currentStatus = status;
-  applyFilters();
-}
-
-function applyFilters() {
-  const rows = document.querySelectorAll("#paintTable tbody tr");
-  rows.forEach(row => {
-    const cells = row.querySelectorAll("td");
-    const kategori = cells[0]?.textContent.trim().toUpperCase();
-    const maling = cells[1]?.textContent.toLowerCase();
-    const status = cells[2]?.textContent;
-
-    let matchesCategory = (currentCategory === "ALL" || kategori === currentCategory);
-    let matchesStatus = (currentStatus === "ALL" || status.includes(currentStatus));
-    let matchesSearch = (currentSearch === "" || maling.includes(currentSearch));
-
-    // Fjern eventuell markering først
-    cells[1].innerHTML = cells[1].textContent;
-
-    if (matchesCategory && matchesStatus && matchesSearch) {
-      row.style.display = "";
-      // Marker treff i søkefeltet
-      if (currentSearch) {
-        const regex = new RegExp(currentSearch, "gi");
-        cells[1].innerHTML = cells[1].textContent.replace(
-          regex,
-          match => `<mark style='background-color: #ffd700; color: #000;'>${match}</mark>`
-        );
-      }
-    } else {
-      row.style.display = "none";
-    }
-  });
 }
 </script>
 </body>
