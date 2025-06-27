@@ -3,53 +3,139 @@
 <html lang="no">
 <head>
     <meta charset="UTF-8">
-    <title>Malingskatalog</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Malingskatalog – Warhammer 40K</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500&display=swap');
+
+        :root {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --accent-color: #ffd700;
+            --border-color: #333;
+            --input-bg: #1f1f1f;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             padding: 2rem;
-            background-color: #f4f4f4;
-            color: #333;
         }
+
         h1 {
-            color: #2c3e50;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
+
         input[type="text"] {
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
             padding: 0.5rem;
             width: 100%;
             max-width: 400px;
-            margin-bottom: 1rem;
             font-size: 1rem;
+            margin-bottom: 1rem;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            background: white;
+            background-color: #1e1e1e;
         }
+
         th, td {
             padding: 0.75rem;
-            border: 1px solid #ccc;
+            border: 1px solid var(--border-color);
             text-align: left;
         }
+
         th {
-            background-color: #eaeaea;
+            background-color: #2a2a2a;
+            color: var(--accent-color);
         }
+
         .har {
-            color: green;
+            color: #00ff88;
             font-weight: bold;
         }
+
         .mangler {
-            color: red;
+            color: #ff4444;
             font-weight: bold;
+        }
+
+        .swatch {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            margin-right: 0.5rem;
+            border: 1px solid #aaa;
+            vertical-align: middle;
+        }
+
+        @media screen and (max-width: 600px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+                width: 100%;
+            }
+            thead {
+                display: none;
+            }
+            tr {
+                margin-bottom: 1rem;
+                background-color: #1e1e1e;
+                border: 1px solid var(--border-color);
+                padding: 1rem;
+            }
+            td {
+                text-align: right;
+                position: relative;
+                padding-left: 50%;
+            }
+            td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 0;
+                width: 50%;
+                padding-left: 1rem;
+                font-weight: bold;
+                text-align: left;
+                color: var(--accent-color);
+            }
         }
     </style>
 </head>
 <body>
-    <h1>🎨 Min Warhammer Malingskatalog</h1>
-    <input type="text" id="searchInput" placeholder="🔍 Søk etter maling eller kategori...">
+    <h1>🎨 Malingskatalog – Warhammer 40K</h1>
 
-    <table id="paintTable">
+<div id="statusButtons" style="margin-bottom: 1rem;">
+    <button onclick="filterStatus('ALL')">Vis alle status</button>
+    <button onclick="filterStatus('✅')">✅ Har</button>
+    <button onclick="filterStatus('❌')">❌ Mangler</button>
+</div>
+
+<div id="filterButtons" style="margin-bottom: 1rem;">
+<button onclick="filterCategory('ALL')">Vis alle</button>
+<button onclick="filterCategory('BASE')">BASE</button>
+<button onclick="filterCategory('CONTRAST')">CONTRAST</button>
+<button onclick="filterCategory('LAYER')">LAYER</button>
+<button onclick="filterCategory('OTHER')">OTHER</button>
+<button onclick="filterCategory('SHADE')">SHADE</button>
+<button onclick="filterCategory('SPRAY')">SPRAY</button>
+<button onclick="filterCategory('TECHNICAL')">TECHNICAL</button>
+</div>
+
+    <input type="text" id="searchInput" placeholder="🔍 Søk etter maling eller kategori...">
+    
+<div style="margin: 1rem 0;">
+    <input type="password" id="editPassword" placeholder="🔒 Skriv inn passord for å redigere" style="padding: 0.5rem; max-width: 300px;">
+    <button onclick="unlockEditing()">Lås opp redigering</button>
+<span id="unlockMessage" style="margin-left:1rem;color:#aaa;"></span>
+</div>
+
+<table id="paintTable">
         <thead>
             <tr>
                 <th>Kategori</th>
@@ -58,139 +144,216 @@
             </tr>
         </thead>
         <tbody>
-<tr><td>BASE</td><td>Abaddon Black</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Averland Sunset</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Balthasar Gold</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Bugmans Glow</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Celestra Grey</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Corax White</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Corvus Black</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Daemonette Hide</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Death Guard Green</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Dryad Bark</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Grey Seer</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Iron Hands Steel</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Iron Warriors</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Jokaero Orange</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Kantor Blue</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Khorne Red</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Leadbelcher</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Lupercal Green</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Macragge Blue</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Mechanicus Standard Grey</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Mephiston Red</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Morghast Bone</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Mournfang Brown</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Naggaroth Night</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Orruk Flesh</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Rakarth Flesh</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Retributor Armour</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Rhinox Hide</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Runelord Brass</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Screamer Pink</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Screaming Bell</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Steel Legion Drab</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Thondia Brown</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Thousand Sons Blue</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Waaagh! Flesh</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Warplock Bronze</td><td class='har'>✅ Har</td></tr>
-<tr><td>BASE</td><td>Zandri Dust</td><td class='har'>✅ Har</td></tr>
-<tr><td>CONTRAST</td><td>Iyanden Yellow</td><td class='har'>✅ Har</td></tr>
-<tr><td>CONTRAST</td><td>Magos Purple</td><td class='har'>✅ Har</td></tr>
-<tr><td>CONTRAST</td><td>Skeleton Horde</td><td class='har'>✅ Har</td></tr>
-<tr><td>CONTRAST</td><td>Volupus Pink</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Administratum Grey</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Ahriman Blue</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Alaitoc Blue</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Auric Armour Gold</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Baneblade Brown</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Brass Scorpion</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Cadian Fleshtone</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Calgar Blue</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Dark Reaper</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Dawnstone</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Deathclaw Brown</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Doombull Brown</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Emperors Children</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Eshin Grey</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Evil Sunz Scarlet</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Fenrisian Grey</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Fire Dragon Bright</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Flash Gitz Yellow</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Fulgrim Pink</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Gehenna's Gold</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Genestealer Purple</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Gorthor Brown</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Hoeth Blue</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Ironbreaker</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Kabalite Green</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Karak Stone</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Kislev Flesh</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Krieg Khaki</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Liberator Gold</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Nurgling Green</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Ogryn Camo</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Pallid Wych Flesh</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Phalanx Yellow</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Pink Horror</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Russ Grey</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Screaming Skull</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Skavenblight Dinge</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Skrag Brown</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Slaanesh Grey</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Sons of Horus Green</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Stormvermin Fur</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Sybarite Green</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Sycorax Bronze</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Tallarn Sand</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Temple Guard Blue</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Thunderhawk Blue</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Troll Slayer Orange</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Ulthuan Grey</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Ushabti Bone</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Warboss Green</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Wazdakka Red</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>White Scar</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Wild Rider Red</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Xereus Purple</td><td class='har'>✅ Har</td></tr>
-<tr><td>LAYER</td><td>Yriel Yellow</td><td class='har'>✅ Har</td></tr>
-<tr><td>OTHER</td><td>Matt White</td><td class='har'>✅ Har</td></tr>
-<tr><td>SHADE</td><td>Agrax Earthshade</td><td class='har'>✅ Har</td></tr>
-<tr><td>SHADE</td><td>Athonian Camoshade</td><td class='har'>✅ Har</td></tr>
-<tr><td>SHADE</td><td>Biel Tan Green</td><td class='har'>✅ Har</td></tr>
-<tr><td>SHADE</td><td>Biel-Tan Green</td><td class='har'>✅ Har</td></tr>
-<tr><td>SHADE</td><td>Carroburg Crimson</td><td class='har'>✅ Har</td></tr>
-<tr><td>SHADE</td><td>Casandora Yellow</td><td class='har'>✅ Har</td></tr>
-<tr><td>SHADE</td><td>Coelia Greenshade</td><td class='har'>✅ Har</td></tr>
-<tr><td>SHADE</td><td>Drakenhof Nightshade</td><td class='har'>✅ Har</td></tr>
-<tr><td>SHADE</td><td>Druchii Violet</td><td class='har'>✅ Har</td></tr>
-<tr><td>SHADE</td><td>Nuln Oil</td><td class='har'>✅ Har</td></tr>
-<tr><td>SHADE</td><td>Reikland Fleshshade</td><td class='har'>✅ Har</td></tr>
-<tr><td>SHADE</td><td>Seraphim Sepia</td><td class='har'>✅ Har</td></tr>
-<tr><td>SPRAY</td><td>Chaos Black</td><td class='har'>✅ Har</td></tr>
-<tr><td>SPRAY</td><td>Wraithbone</td><td class='har'>✅ Har</td></tr>
-<tr><td>TECHNICAL</td><td>Astrogranite</td><td class='har'>✅ Har</td></tr>
-<tr><td>TECHNICAL</td><td>Nihilakh Oxide</td><td class='har'>✅ Har</td></tr>
-<tr><td>TECHNICAL</td><td>Skarsnik Green</td><td class='har'>✅ Har</td></tr>
-<tr><td>TECHNICAL</td><td>Skullcrusher Brass</td><td class='har'>✅ Har</td></tr>
-<tr><td>TECHNICAL</td><td>Squig Orange</td><td class='har'>✅ Har</td></tr>
-<tr><td>TECHNICAL</td><td>Stirland Mud</td><td class='har'>✅ Har</td></tr>
-<tr><td>TECHNICAL</td><td>Stormhost Silver</td><td class='har'>✅ Har</td></tr>
-<tr><td>TECHNICAL</td><td>Tuskgor Fur</td><td class='har'>✅ Har</td></tr>
-
-        </tbody>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#000000'></span>Abaddon Black</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#FFCC00'></span>Averland Sunset</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#A97444'></span>Balthasar Gold</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#A36C58'></span>Bugmans Glow</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(198,166,105)'></span>Celestra Grey</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#F2F2F2'></span>Corax White</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(198,41,145)'></span>Corvus Black</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(204,236,23)'></span>Daemonette Hide</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#6B7755'></span>Death Guard Green</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#3A2E23'></span>Dryad Bark</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(224,110,118)'></span>Grey Seer</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(166,207,41)'></span>Iron Hands Steel</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(81,106,74)'></span>Iron Warriors</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(95,61,150)'></span>Jokaero Orange</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#1C2E5B'></span>Kantor Blue</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#58111A'></span>Khorne Red</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#999999'></span>Leadbelcher</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#20362C'></span>Lupercal Green</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#1E3A77'></span>Macragge Blue</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#555555'></span>Mechanicus Standard Grey</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#8B0000'></span>Mephiston Red</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(111,196,114)'></span>Morghast Bone</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#6B4423'></span>Mournfang Brown</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(161,102,158)'></span>Naggaroth Night</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#6C9B2C'></span>Orruk Flesh</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(33,182,219)'></span>Rakarth Flesh</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#C7A740'></span>Retributor Armour</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(81,96,65)'></span>Rhinox Hide</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(49,92,207)'></span>Runelord Brass</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#8E3A59'></span>Screamer Pink</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#924E2E'></span>Screaming Bell</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#635C48'></span>Steel Legion Drab</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(234,248,72)'></span>Thondia Brown</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(161,41,243)'></span>Thousand Sons Blue</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(16,136,31)'></span>Waaagh! Flesh</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(177,234,171)'></span>Warplock Bronze</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1a1a2e'><td data-label='Kategori'>BASE</td><td data-label='Maling'><span class='swatch' style='background-color:#C2B280'></span>Zandri Dust</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#53354a'><td data-label='Kategori'>CONTRAST</td><td data-label='Maling'><span class='swatch' style='background-color:#FFD700'></span>Iyanden Yellow</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#53354a'><td data-label='Kategori'>CONTRAST</td><td data-label='Maling'><span class='swatch' style='background-color:#6B4F7C'></span>Magos Purple</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#53354a'><td data-label='Kategori'>CONTRAST</td><td data-label='Maling'><span class='swatch' style='background-color:#B6A275'></span>Skeleton Horde</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#53354a'><td data-label='Kategori'>CONTRAST</td><td data-label='Maling'><span class='swatch' style='background-color:#A74176'></span>Volupus Pink</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#D0D0D0'></span>Administratum Grey</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(33,159,132)'></span>Ahriman Blue</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(147,248,185)'></span>Alaitoc Blue</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(33,49,70)'></span>Auric Armour Gold</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(44,51,18)'></span>Baneblade Brown</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(113,94,169)'></span>Brass Scorpion</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#DEB7A0'></span>Cadian Fleshtone</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#2B4E93'></span>Calgar Blue</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(225,236,136)'></span>Dark Reaper</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#888888'></span>Dawnstone</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(50,143,107)'></span>Deathclaw Brown</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(111,209,192)'></span>Doombull Brown</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(122,202,236)'></span>Emperors Children</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(204,226,84)'></span>Eshin Grey</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#C12126'></span>Evil Sunz Scarlet</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(115,25,248)'></span>Fenrisian Grey</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(143,102,230)'></span>Fire Dragon Bright</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#FFE800'></span>Flash Gitz Yellow</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#EECDE3'></span>Fulgrim Pink</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(66,68,59)'></span>Gehenna's Gold</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(145,28,167)'></span>Genestealer Purple</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(66,112,203)'></span>Gorthor Brown</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(195,34,142)'></span>Hoeth Blue</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(5,59,123)'></span>Ironbreaker</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(92,2,0)'></span>Kabalite Green</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(163,149,251)'></span>Karak Stone</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#F0C8A0'></span>Kislev Flesh</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(127,141,212)'></span>Krieg Khaki</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#E0C870'></span>Liberator Gold</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#B0C26E'></span>Nurgling Green</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(32,66,6)'></span>Ogryn Camo</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(59,102,214)'></span>Pallid Wych Flesh</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(167,158,154)'></span>Phalanx Yellow</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#D67AB1'></span>Pink Horror</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(202,185,196)'></span>Russ Grey</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#EFE6C4'></span>Screaming Skull</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(202,148,97)'></span>Skavenblight Dinge</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(24,123,230)'></span>Skrag Brown</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(70,18,72)'></span>Slaanesh Grey</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#2B5C4E'></span>Sons of Horus Green</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(192,213,190)'></span>Stormvermin Fur</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(17,21,243)'></span>Sybarite Green</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(240,105,156)'></span>Sycorax Bronze</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(75,115,75)'></span>Tallarn Sand</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#3EB5C4'></span>Temple Guard Blue</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(220,28,208)'></span>Thunderhawk Blue</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(73,68,27)'></span>Troll Slayer Orange</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(123,204,199)'></span>Ulthuan Grey</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(194,38,86)'></span>Ushabti Bone</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(53,100,10)'></span>Warboss Green</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(17,183,83)'></span>Wazdakka Red</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(121,129,186)'></span>White Scar</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(163,173,61)'></span>Wild Rider Red</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:#462D75'></span>Xereus Purple</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#16213e'><td data-label='Kategori'>LAYER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(97,56,67)'></span>Yriel Yellow</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1e1e1e'><td data-label='Kategori'>OTHER</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(210,208,248)'></span>Matt White</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#0f3460'><td data-label='Kategori'>SHADE</td><td data-label='Maling'><span class='swatch' style='background-color:#4B3621'></span>Agrax Earthshade</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#0f3460'><td data-label='Kategori'>SHADE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(242,82,183)'></span>Athonian Camoshade</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#0f3460'><td data-label='Kategori'>SHADE</td><td data-label='Maling'><span class='swatch' style='background-color:#4A775C'></span>Biel Tan Green</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#0f3460'><td data-label='Kategori'>SHADE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(19,55,77)'></span>Biel-Tan Green</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#0f3460'><td data-label='Kategori'>SHADE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(74,147,210)'></span>Carroburg Crimson</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#0f3460'><td data-label='Kategori'>SHADE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(229,139,178)'></span>Casandora Yellow</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#0f3460'><td data-label='Kategori'>SHADE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(203,252,252)'></span>Coelia Greenshade</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#0f3460'><td data-label='Kategori'>SHADE</td><td data-label='Maling'><span class='swatch' style='background-color:#2C3F73'></span>Drakenhof Nightshade</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#0f3460'><td data-label='Kategori'>SHADE</td><td data-label='Maling'><span class='swatch' style='background-color:#422153'></span>Druchii Violet</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#0f3460'><td data-label='Kategori'>SHADE</td><td data-label='Maling'><span class='swatch' style='background-color:#1E1E1E'></span>Nuln Oil</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#0f3460'><td data-label='Kategori'>SHADE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(211,78,147)'></span>Reikland Fleshshade</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#0f3460'><td data-label='Kategori'>SHADE</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(69,50,123)'></span>Seraphim Sepia</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1e1e1e'><td data-label='Kategori'>SPRAY</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(132,40,243)'></span>Chaos Black</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#1e1e1e'><td data-label='Kategori'>SPRAY</td><td data-label='Maling'><span class='swatch' style='background-color:#EAD6BA'></span>Wraithbone</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#3e2c41'><td data-label='Kategori'>TECHNICAL</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(210,195,150)'></span>Astrogranite</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#3e2c41'><td data-label='Kategori'>TECHNICAL</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(101,73,109)'></span>Nihilakh Oxide</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#3e2c41'><td data-label='Kategori'>TECHNICAL</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(35,159,141)'></span>Skarsnik Green</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#3e2c41'><td data-label='Kategori'>TECHNICAL</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(164,27,70)'></span>Skullcrusher Brass</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#3e2c41'><td data-label='Kategori'>TECHNICAL</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(1,92,93)'></span>Squig Orange</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#3e2c41'><td data-label='Kategori'>TECHNICAL</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(51,108,182)'></span>Stirland Mud</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#3e2c41'><td data-label='Kategori'>TECHNICAL</td><td data-label='Maling'><span class='swatch' style='background-color:#D8D8D8'></span>Stormhost Silver</td><td data-label='Status' class='har'>✅ Har</td></tr>
+<tr style='background-color:#3e2c41'><td data-label='Kategori'>TECHNICAL</td><td data-label='Maling'><span class='swatch' style='background-color:rgb(230,159,199)'></span>Tuskgor Fur</td><td data-label='Status' class='har'>✅ Har</td></tr>
+</tbody>
     </table>
 
-    <script>
-        const searchInput = document.getElementById("searchInput");
-        searchInput.addEventListener("keyup", function () {
-            const filter = searchInput.value.toLowerCase();
-            const rows = document.querySelectorAll("#paintTable tbody tr");
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(filter) ? "" : "none";
-            });
+<div style="margin-top: 1rem;">
+    <button onclick="downloadCSV()">💾 Last ned som CSV</button>
+    <small style="margin-left: 1rem; color: #aaa;">Endringer må lagres manuelt via GitHub.</small>
+</div>
+
+
+    
+
+<script>
+    let editingUnlocked = false;
+
+    function unlockEditing() {
+        const pw = document.getElementById("editPassword").value;
+        const msg = document.getElementById("unlockMessage");
+        if (pw === "Hansa") {
+            editingUnlocked = true;
+            msg.innerText = "✅ Redigering aktivert!";
+            msg.style.color = "#00ff88";
+            enableEditing();
+        } else {
+            msg.innerText = "❌ Feil passord!";
+            msg.style.color = "#ff4444";
+        }
+    }
+
+    function enableEditing() {
+        document.querySelectorAll("#paintTable td").forEach(cell => {
+            cell.onclick = function () {
+                if (!editingUnlocked || cell.querySelector("input")) return;
+                const original = cell.innerText;
+                const input = document.createElement("input");
+                input.value = original;
+                input.style.width = "100%";
+                cell.innerText = "";
+                cell.appendChild(input);
+                input.focus();
+                input.onblur = () => cell.innerText = input.value || original;
+                input.onkeydown = e => {
+                    if (e.key === "Enter") input.blur();
+                    if (e.key === "Escape") cell.innerText = original;
+                };
+            };
         });
-    </script>
+    }
+
+    function filterCategory(category) {
+        const rows = document.querySelectorAll("#paintTable tbody tr");
+        rows.forEach(row => {
+            const cat = row.querySelector("td");
+            row.style.display = (category === "ALL" || cat.textContent.trim() === category) ? "" : "none";
+        });
+    }
+
+    function filterStatus(status) {
+        const rows = document.querySelectorAll("#paintTable tbody tr");
+        rows.forEach(row => {
+            const statusCell = row.querySelector("td:last-child");
+            row.style.display = (status === "ALL" || statusCell.textContent.includes(status)) ? "" : "none";
+        });
+    }
+
+    function downloadCSV() {
+        const rows = document.querySelectorAll("#paintTable tr");
+        let csvContent = "";
+        rows.forEach(row => {
+            const cols = row.querySelectorAll("td, th");
+            const rowData = [];
+            cols.forEach(col => {
+                rowData.push(col.innerText.replace(/\n/g, "").trim());
+            });
+            csvContent += rowData.join(",") + "\n";
+        });
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", "malingskatalog.csv");
+        link.click();
+    }
+
+    window.onload = function () {
+        document.getElementById("editPassword").addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                unlockEditing();
+            }
+        });
+    };
+</script>
+
 </body>
 </html>
