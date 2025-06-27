@@ -80,6 +80,57 @@
    <input id="searchInput" placeholder="🔍 Søk i katalogen..." style="width: 100%; padding: 0.75rem; font-size: 1rem; border: 2px solid #ffd700; 
                 background-color: #1e1e1e; color: #e0e0e0; border-radius: 8px;" type="text"/>
   </div>
+  <div id="filterContainer" style="margin-bottom: 1rem;">
+   <button class="filter-btn" onclick="filterCategory('ALL')">
+    Alle
+   </button>
+   <button class="filter-btn" onclick="filterCategory('SPRAY')">
+    Spray
+   </button>
+   <button class="filter-btn" onclick="filterCategory('BASE')">
+    Base
+   </button>
+   <button class="filter-btn" onclick="filterCategory('LAYER')">
+    Layer
+   </button>
+   <button class="filter-btn" onclick="filterCategory('SHADE')">
+    Shade
+   </button>
+   <button class="filter-btn" onclick="filterCategory('CONTRAST')">
+    Contrast
+   </button>
+   <button class="filter-btn" onclick="filterCategory('TECHNICAL')">
+    Technical
+   </button>
+  </div>
+  <style>
+   .filter-btn {
+    background-color: #2a2a2a;
+    color: #ffd700;
+    border: 1px solid #ffd700;
+    padding: 0.5rem 1rem;
+    margin-right: 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .filter-btn:hover {
+    background-color: #ffd700;
+    color: #2a2a2a;
+  }
+  </style>
+  <script>
+   function filterCategory(category) {
+    const rows = document.querySelectorAll("#paintTable tbody tr");
+    rows.forEach(row => {
+      const cat = row.querySelector("td").innerText.toUpperCase();
+      if (category === "ALL" || cat === category.toUpperCase()) {
+        row.style.display = "";
+      } else {
+        row.style.display = "none";
+      }
+    });
+  }
+  </script>
   <h1>
    🎨 Malingskatalog – Warhammer 40K
   </h1>
