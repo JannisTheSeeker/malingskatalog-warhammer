@@ -109,6 +109,17 @@
 </head>
 <body>
     <h1>🎨 Malingskatalog – Warhammer 40K</h1>
+<div id="filterButtons" style="margin-bottom: 1rem;">
+<button onclick="filterCategory('ALL')">Vis alle</button>
+<button onclick="filterCategory('BASE')">BASE</button>
+<button onclick="filterCategory('CONTRAST')">CONTRAST</button>
+<button onclick="filterCategory('LAYER')">LAYER</button>
+<button onclick="filterCategory('OTHER')">OTHER</button>
+<button onclick="filterCategory('SHADE')">SHADE</button>
+<button onclick="filterCategory('SPRAY')">SPRAY</button>
+<button onclick="filterCategory('TECHNICAL')">TECHNICAL</button>
+</div>
+
     <input type="text" id="searchInput" placeholder="🔍 Søk etter maling eller kategori...">
     <table id="paintTable">
         <thead>
@@ -251,6 +262,19 @@
                 row.style.display = text.includes(filter) ? "" : "none";
             });
         });
-    </script>
+    
+    function filterCategory(category) {
+        const rows = document.querySelectorAll("#paintTable tbody tr");
+        rows.forEach(row => {
+            const cell = row.querySelector("td");
+            if (category === "ALL" || (cell && cell.textContent.trim() === category)) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
+
+</script>
 </body>
 </html>
