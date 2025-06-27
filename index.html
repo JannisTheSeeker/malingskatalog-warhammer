@@ -109,6 +109,13 @@
 </head>
 <body>
     <h1>🎨 Malingskatalog – Warhammer 40K</h1>
+
+<div id="statusButtons" style="margin-bottom: 1rem;">
+    <button onclick="filterStatus('ALL')">Vis alle status</button>
+    <button onclick="filterStatus('✅')">✅ Har</button>
+    <button onclick="filterStatus('❌')">❌ Mangler</button>
+</div>
+
 <div id="filterButtons" style="margin-bottom: 1rem;">
 <button onclick="filterCategory('ALL')">Vis alle</button>
 <button onclick="filterCategory('BASE')">BASE</button>
@@ -400,6 +407,13 @@
             alert("Feil passord!");
         }
     }
+
+
+    document.getElementById("editPassword").addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+            unlockEditing();
+        }
+    });
 
 </script>
 </body>
