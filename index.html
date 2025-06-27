@@ -1570,6 +1570,56 @@ function resetTable() {
     location.reload();
   }
 }
+
+let currentCategory = "ALL";
+let currentStatus = "ALL";
+let currentSearch = "";
+
+document.getElementById("searchInput").addEventListener("input", function () {
+  currentSearch = this.value.toLowerCase();
+  applyFilters();
+});
+
+function filterCategory(category) {
+  currentCategory = category;
+  applyFilters();
+}
+
+function filterStatus(status) {
+  currentStatus = status;
+  applyFilters();
+}
+
+function applyFilters() {
+  const rows = document.querySelectorAll("#paintTable tbody tr");
+  rows.forEach(row => {
+    const cells = row.querySelectorAll("td");
+    const kategori = cells[0]?.textContent.trim().toUpperCase();
+    const maling = cells[1]?.textContent.toLowerCase();
+    const status = cells[2]?.textContent;
+
+    let matchesCategory = (currentCategory === "ALL" || kategori === currentCategory);
+    let matchesStatus = (currentStatus === "ALL" || status.includes(currentStatus));
+    let matchesSearch = (currentSearch === "" || maling.includes(currentSearch));
+
+    // Fjern eventuell markering først
+    cells[1].innerHTML = cells[1].textContent;
+
+    if (matchesCategory && matchesStatus && matchesSearch) {
+      row.style.display = "";
+      // Marker treff i søkefeltet
+      if (currentSearch) {
+        const regex = new RegExp(currentSearch, "gi");
+        cells[1].innerHTML = cells[1].textContent.replace(
+          regex,
+          match => `<mark style='background-color: #ffd700; color: #000;'>${match}</mark>`
+        );
+      }
+    } else {
+      row.style.display = "none";
+    }
+  });
+}
 </script>
 </body>
 </html>
