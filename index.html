@@ -1457,6 +1457,16 @@ document.getElementById("searchInput").addEventListener("input", function () {
   applyFilters();
 });
 
+function filterCategory(category) {
+  currentCategory = category;
+  applyFilters();
+}
+
+function filterStatus(status) {
+  currentStatus = status;
+  applyFilters();
+}
+
 function applyFilters() {
   const rows = document.querySelectorAll("#paintTable tbody tr");
   let counters = {};
@@ -1465,6 +1475,7 @@ function applyFilters() {
     if (cells.length < 5) return;
 
     const kategori = cells[1].textContent.trim().toUpperCase();
+    const merke = cells[2].textContent.trim();
     const malingText = cells[3].textContent.toLowerCase();
     const status = cells[4].textContent;
 
@@ -1472,21 +1483,24 @@ function applyFilters() {
     let matchesStatus = (currentStatus === "ALL" || status.includes(currentStatus));
     let matchesSearch = (currentSearch === "" || malingText.includes(currentSearch));
 
-    row.style.display = (matchesCategory && matchesStatus && matchesSearch) ? "" : "none";
+    const match = matchesCategory && matchesStatus && matchesSearch;
+    row.style.display = match ? "" : "none";
 
-    // Fjern eventuell tidligere markering
+    // Merk søketreff hvis det vises
     const innerCell = cells[3];
     const originalText = innerCell.textContent;
-    const matchRegex = new RegExp(currentSearch, "gi");
-    if (matchesSearch && currentSearch !== "") {
-      const marked = originalText.replace(matchRegex, match => `<mark style='background-color: #ffd700; color: #000;'>${match}</mark>`);
-      innerCell.innerHTML = marked;
+    if (match && currentSearch !== "") {
+      const regex = new RegExp(currentSearch, "gi");
+      innerCell.innerHTML = originalText.replace(
+        regex,
+        match => `<mark style='background-color: #ffd700; color: #000;'>${match}</mark>`
+      );
     } else {
       innerCell.innerHTML = originalText;
     }
 
-    // Tell per kategori
-    if (row.style.display === "") {
+    // Nummerering
+    if (match) {
       if (!counters[kategori]) counters[kategori] = 1;
       else counters[kategori]++;
       cells[0].textContent = counters[kategori];
