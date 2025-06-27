@@ -112,10 +112,7 @@ td[contenteditable="true"] {
 </style>
 </head>
 <body><div id="editModeBanner" style="display:none;background:#ffd700;color:#000;padding:0.75rem;font-weight:bold;text-align:center;border-radius:8px;margin-bottom:1rem;">✏️ Redigeringsmodus aktiv</div>
-<div style="margin-bottom: 1rem;">
-<input id="searchInput" placeholder="🔍 Søk i katalogen..." style="width: 100%; padding: 0.75rem; font-size: 1rem; border: 2px solid #ffd700; 
-                background-color: #1e1e1e; color: #e0e0e0; border-radius: 8px;" type="text"/>
-</div>
+
 <h1>
    🎨 Malingskatalog – Warhammer 40K
   </h1>
@@ -155,8 +152,7 @@ td[contenteditable="true"] {
 <button onclick="filterCategory('TECHNICAL')">
     TECHNICAL
    </button>
-</div>
-<div style="margin: 1rem 0;">
+</div><div style="margin: 1rem 0; font-size: 0.9rem; color: #999;">
 <input id="editPassword" placeholder="🔒 Skriv inn passord for å redigere" style="padding: 0.5rem; max-width: 300px;" type="password"/>
 <button onclick="unlockEditing()">
     Lås opp redigering
@@ -164,7 +160,11 @@ td[contenteditable="true"] {
 <span id="unlockMessage" style="margin-left:1rem;color:#aaa;">
 </span>
 <button onclick="resetTable()">🔄 Tilbakestill til original</button></div>
-<table id="paintTable">
+
+<div style="margin-bottom: 1rem; background-color: #222; padding: 1rem; border: 2px solid #ffd700; border-radius: 8px;">
+<input id="searchInput" placeholder="🔍 Søk i katalogen..." style="width: 100%; padding: 0.75rem; font-size: 1rem; border: 2px solid #ffd700; 
+                background-color: #1e1e1e; color: #e0e0e0; border-radius: 8px;" type="text"/>
+</div><table id="paintTable">
 <thead>
 <tr>
 <th>
