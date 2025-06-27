@@ -76,6 +76,10 @@
   </style>
  </head>
  <body>
+  <div style="margin-bottom: 1rem;">
+   <input id="searchInput" placeholder="🔍 Søk i katalogen..." style="width: 100%; padding: 0.75rem; font-size: 1rem; border: 2px solid #ffd700; 
+                background-color: #1e1e1e; color: #e0e0e0; border-radius: 8px;" type="text"/>
+  </div>
   <h1>
    🎨 Malingskatalog – Warhammer 40K
   </h1>
@@ -116,7 +120,6 @@
     TECHNICAL
    </button>
   </div>
-  <input id="searchInput" placeholder="🔍 Søk etter maling eller kategori..." type="text"/>
   <div style="margin: 1rem 0;">
    <input id="editPassword" placeholder="🔒 Skriv inn passord for å redigere" style="padding: 0.5rem; max-width: 300px;" type="password"/>
    <button onclick="unlockEditing()">
@@ -1600,103 +1603,26 @@
    </small>
   </div>
   <script>
-   let editingUnlocked = false;
-
-function unlockEditing() {
-    const pw = document.getElementById("editPassword").value;
-    const msg = document.getElementById("unlockMessage");
-    if (pw === "Hansa") {
-        editingUnlocked = true;
-        msg.innerText = "✅ Redigering aktivert!";
-        msg.style.color = "#00ff88";
-        enableEditing();
-    } else {
-        msg.innerText = "❌ Feil passord!";
-        msg.style.color = "#ff4444";
-    }
-}
-
-function enableEditing() {
-    document.querySelectorAll("#paintTable td").forEach(cell => {
-        cell.onclick = function () {
-            if (!editingUnlocked || cell.querySelector("input")) return;
-            const original = cell.innerText;
-            const input = document.createElement("input");
-            input.value = original;
-            input.style.width = "100%";
-            cell.innerText = "";
-            cell.appendChild(input);
-            input.focus();
-            input.onblur = () => cell.innerText = input.value || original;
-            input.onkeydown = e => {
-                if (e.key === "Enter") input.blur();
-                if (e.key === "Escape") cell.innerText = original;
-            };
-        };
+   document.getElementById("searchInput").addEventListener("input", function () {
+  const filter = this.value.toLowerCase();
+  const rows = document.querySelectorAll("#paintTable tbody tr");
+  rows.forEach(row => {
+    let match = false;
+    row.querySelectorAll("td").forEach(cell => {
+      const text = cell.textContent.toLowerCase();
+      if (text.includes(filter)) {
+        match = true;
+        cell.innerHTML = cell.textContent.replace(
+          new RegExp(filter, "gi"),
+          match => `<mark style='background-color: #ffd700; color: #000;'>${match}</mark>`
+        );
+      } else {
+        cell.innerHTML = cell.textContent;
+      }
     });
-}
-
-function filterCategory(category) {
-    setActiveButton("filterButtons", category);
-    const rows = document.querySelectorAll("#paintTable tbody tr");
-    rows.forEach(row => {
-        const cat = row.querySelector("td");
-        row.style.display = (category === "ALL" || cat.textContent.trim() === category) ? "" : "none";
-    });
-}
-
-function filterStatus(status) {
-    setActiveButton("statusButtons", status);
-    const rows = document.querySelectorAll("#paintTable tbody tr");
-    rows.forEach(row => {
-        const statusCell = row.querySelector("td:last-child");
-        row.style.display = (status === "ALL" || statusCell.textContent.includes(status)) ? "" : "none";
-    });
-}
-
-function setActiveButton(containerId, value) {
-    const buttons = document.querySelectorAll(`#${containerId} button`);
-    buttons.forEach(btn => {
-        btn.classList.remove("active");
-        if (btn.innerText.includes(value) || (value === "ALL" && btn.innerText.includes("Vis alle"))) {
-            btn.classList.add("active");
-        }
-    });
-}
-
-function downloadCSV() {
-    const rows = document.querySelectorAll("#paintTable tr");
-    let csvContent = "";
-    rows.forEach(row => {
-        const cols = row.querySelectorAll("td, th");
-        const rowData = [];
-        cols.forEach(col => {
-            rowData.push(col.innerText.replace(/\n/g, "").trim());
-        });
-        csvContent += rowData.join(",") + "\n";
-    });
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", "malingskatalog.csv");
-    link.click();
-}
-
-window.onload = function () {
-    document.getElementById("editPassword").addEventListener("keydown", function(e) {
-        if (e.key === "Enter") unlockEditing();
-    });
-
-    document.getElementById("searchInput").addEventListener("input", function() {
-        const filter = this.value.toLowerCase();
-        const rows = document.querySelectorAll("#paintTable tbody tr");
-        rows.forEach(row => {
-            const text = row.textContent.toLowerCase();
-            row.style.display = text.includes(filter) ? "" : "none";
-        });
-    });
-};
+    row.style.display = match ? "" : "none";
+  });
+});
   </script>
  </body>
 </html>
