@@ -1297,6 +1297,57 @@ select {
    </small>
 </div>
 <script>
+let currentCategory = "ALL";
+let currentStatus = "ALL";
+let currentSearch = "";
+
+document.getElementById("searchInput").addEventListener("input", function () {
+  currentSearch = this.value.toLowerCase();
+  applyFilters();
+});
+
+function filterCategory(category) {
+  currentCategory = category;
+  applyFilters();
+}
+
+function filterStatus(status) {
+  currentStatus = status;
+  applyFilters();
+}
+
+function applyFilters() {
+  const rows = document.querySelectorAll("#paintTable tbody tr");
+  rows.forEach(row => {
+    const cells = row.querySelectorAll("td");
+    if (cells.length < 3) return;
+
+    const kategori = cells[0].textContent.trim().toUpperCase();
+    const maling = cells[1].textContent.toLowerCase();
+    const status = cells[2].textContent;
+
+    let matchesCategory = (currentCategory === "ALL" || kategori === currentCategory);
+    let matchesStatus = (currentStatus === "ALL" || status.includes(currentStatus));
+    let matchesSearch = (currentSearch === "" || maling.includes(currentSearch));
+
+    // Fjern eventuell markering
+    cells[1].innerHTML = cells[1].textContent;
+
+    if (matchesCategory && matchesStatus && matchesSearch) {
+      row.style.display = "";
+      if (currentSearch) {
+        const regex = new RegExp(currentSearch, "gi");
+        cells[1].innerHTML = cells[1].textContent.replace(
+          regex,
+          match => `<mark style='background-color: #ffd700; color: #000;'>${match}</mark>`
+        );
+      }
+    } else {
+      row.style.display = "none";
+    }
+  });
+}
+
 window.unlockEditing = function() {
   const password = document.getElementById("editPassword").value;
   const message = document.getElementById("unlockMessage");
@@ -1305,6 +1356,7 @@ window.unlockEditing = function() {
     enableEditing();
     alert("🔓 Du har låst opp redigering!");
     document.getElementById("editModeBanner").style.display = "block";
+    document.getElementById("addRowBtn").style.display = "inline-block";
   } else {
     message.textContent = "Feil passord.";
   }
@@ -1315,11 +1367,9 @@ function enableEditing() {
   rows.forEach(row => {
     const cells = row.querySelectorAll("td");
     if (cells.length >= 3) {
-      // Aktiver contenteditable for Kategori og Maling
       cells[0].setAttribute("contenteditable", "true");
       cells[1].setAttribute("contenteditable", "true");
 
-      // Vis dropdown for Status
       const select = cells[2].querySelector("select");
       if (select) {
         select.style.display = "inline-block";
@@ -1331,7 +1381,7 @@ function enableEditing() {
     }
   });
 
-  // Last lagrede data fra localStorage
+  // Last data
   const savedData = JSON.parse(localStorage.getItem("paintData") || "[]");
   if (savedData.length === rows.length) {
     rows.forEach((row, i) => {
@@ -1349,7 +1399,6 @@ function enableEditing() {
     });
   }
 
-  // Lagre endringer ved blur
   document.querySelectorAll("#paintTable tbody td").forEach(cell => {
     cell.addEventListener("blur", () => {
       saveToLocalStorage();
@@ -1376,8 +1425,6 @@ function resetTable() {
     location.reload();
   }
 }
-
-document.getElementById("addRowBtn").style.display = "inline-block";
 
 window.addNewRow = function() {
   const table = document.getElementById("paintTable").querySelector("tbody");
