@@ -272,69 +272,61 @@
 </div>
 
 
-    <script>
-        const searchInput = document.getElementById("searchInput");
-        searchInput.addEventListener("keyup", function () {
-            const filter = searchInput.value.toLowerCase();
-            const rows = document.querySelectorAll("#paintTable tbody tr");
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(filter) ? "" : "none";
-            });
-        });
     
-    function filterCategory(category) {
-        const rows = document.querySelectorAll("#paintTable tbody tr");
-        rows.forEach(row => {
-            const cell = row.querySelector("td");
-            if (category === "ALL" || (cell && cell.textContent.trim() === category)) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
-            }
+
+<script>
+    let editingUnlocked = false;
+
+    function unlockEditing() {
+        const pw = document.getElementById("editPassword").value;
+        const msg = document.getElementById("unlockMessage");
+        if (pw === "Hansa") {
+            editingUnlocked = true;
+            msg.innerText = "✅ Redigering aktivert!";
+            msg.style.color = "#00ff88";
+            enableEditing();
+        } else {
+            msg.innerText = "❌ Feil passord!";
+            msg.style.color = "#ff4444";
+        }
+    }
+
+    function enableEditing() {
+        document.querySelectorAll("#paintTable td").forEach(cell => {
+            cell.onclick = function () {
+                if (!editingUnlocked || cell.querySelector("input")) return;
+                const original = cell.innerText;
+                const input = document.createElement("input");
+                input.value = original;
+                input.style.width = "100%";
+                cell.innerText = "";
+                cell.appendChild(input);
+                input.focus();
+                input.onblur = () => cell.innerText = input.value || original;
+                input.onkeydown = e => {
+                    if (e.key === "Enter") input.blur();
+                    if (e.key === "Escape") cell.innerText = original;
+                };
+            };
         });
     }
 
+    function filterCategory(category) {
+        const rows = document.querySelectorAll("#paintTable tbody tr");
+        rows.forEach(row => {
+            const cat = row.querySelector("td");
+            row.style.display = (category === "ALL" || cat.textContent.trim() === category) ? "" : "none";
+        });
+    }
 
     function filterStatus(status) {
         const rows = document.querySelectorAll("#paintTable tbody tr");
         rows.forEach(row => {
             const statusCell = row.querySelector("td:last-child");
-            if (status === "ALL" || (statusCell && statusCell.textContent.includes(status))) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
-            }
+            row.style.display = (status === "ALL" || statusCell.textContent.includes(status)) ? "" : "none";
         });
     }
 
-
-    // Gjør celler redigerbare ved klikk
-    document.querySelectorAll("#paintTable td").forEach(cell => {
-        cell.addEventListener("click", () => {
-            const original = cell.innerText;
-            const input = document.createElement("input");
-            input.value = original;
-            input.style.width = "100%";
-            cell.innerText = "";
-            cell.appendChild(input);
-            input.focus();
-
-            input.addEventListener("blur", () => {
-                cell.innerText = input.value || original;
-            });
-
-            input.addEventListener("keydown", e => {
-                if (e.key === "Enter") {
-                    input.blur();
-                } else if (e.key === "Escape") {
-                    cell.innerText = original;
-                }
-            });
-        });
-    });
-
-    // Last ned tabellen som CSV
     function downloadCSV() {
         const rows = document.querySelectorAll("#paintTable tr");
         let csvContent = "";
@@ -346,8 +338,7 @@
             });
             csvContent += rowData.join(",") + "\n";
         });
-
-        const blob = new Blob([csvContent], {{ type: "text/csv;charset=utf-8;" }});
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.setAttribute("href", url);
@@ -355,66 +346,14 @@
         link.click();
     }
 
-
-    
-    let editingUnlocked = false;
-    function unlockEditing() {
-        const pw = document.getElementById("editPassword").value;
-        const msg = document.getElementById("unlockMessage");
-        if (pw === "Hansa") {
-            editingUnlocked = true;
-            msg.innerText = "✅ Redigering aktivert!";
-            msg.style.color = "#00ff88";
-            document.querySelectorAll("#paintTable td").forEach(cell => {
-                cell.addEventListener("click", () => {
-                    if (!editingUnlocked) return;
-                    const original = cell.innerText;
-                    const input = document.createElement("input");
-                    input.value = original;
-                    input.style.width = "100%";
-                    cell.innerText = "";
-                    cell.appendChild(input);
-                    input.focus();
-                    input.addEventListener("blur", () => {
-                        cell.innerText = input.value || original;
-                    });
-                    input.addEventListener("keydown", e => {
-                        if (e.key === "Enter") {
-                            input.blur();
-                        } else if (e.key === "Escape") {
-                            cell.innerText = original;
-                        }
-                    });
-                });
-            });
-        } else {
-            msg.innerText = "❌ Feil passord!";
-            msg.style.color = "#ff4444";
-        }
-    }
-);
-                    input.addEventListener("keydown", e => {
-                        if (e.key === "Enter") {
-                            input.blur();
-                        } else if (e.key === "Escape") {
-                            cell.innerText = original;
-                        }
-                    });
-                });
-            });
-            alert("Redigering aktivert!");
-        } else {
-            alert("Feil passord!");
-        }
-    }
-
-
-    document.getElementById("editPassword").addEventListener("keydown", function(e) {
-        if (e.key === "Enter") {
-            unlockEditing();
-        }
-    });
-
+    window.onload = function () {
+        document.getElementById("editPassword").addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                unlockEditing();
+            }
+        });
+    };
 </script>
+
 </body>
 </html>
