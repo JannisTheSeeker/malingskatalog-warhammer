@@ -1289,11 +1289,6 @@ let currentCategory = "ALL";
 let currentStatus = "ALL";
 let currentSearch = "";
 
-document.getElementById("searchInput").addEventListener("input", function () {
-  currentSearch = this.value.toLowerCase();
-  applyFilters();
-});
-
 function filterCategory(category) {
   currentCategory = category;
   applyFilters();
@@ -1303,6 +1298,11 @@ function filterStatus(status) {
   currentStatus = status;
   applyFilters();
 }
+
+document.getElementById("searchInput").addEventListener("input", function () {
+  currentSearch = this.value.toLowerCase();
+  applyFilters();
+});
 
 function applyFilters() {
   const rows = document.querySelectorAll("#paintTable tbody tr");
@@ -1314,17 +1314,17 @@ function applyFilters() {
     const kategori = cells[1].textContent.trim().toUpperCase();
     const malingCell = cells[3];
     const malingText = malingCell.textContent.toLowerCase();
-    const status = cells[4].textContent;
+    const statusText = cells[4].textContent;
 
-    let matchesCategory = (currentCategory === "ALL" || kategori === currentCategory);
-    let matchesStatus = (currentStatus === "ALL" || status.includes(currentStatus));
-    let matchesSearch = (currentSearch === "" || malingText.includes(currentSearch));
+    const matchCategory = (currentCategory === "ALL" || kategori === currentCategory);
+    const matchStatus = (currentStatus === "ALL" || statusText.includes(currentStatus));
+    const matchSearch = (currentSearch === "" || malingText.includes(currentSearch));
 
-    const shouldShow = matchesCategory && matchesStatus && matchesSearch;
-    row.style.display = shouldShow ? "" : "none";
+    const isVisible = matchCategory && matchStatus && matchSearch;
+    row.style.display = isVisible ? "" : "none";
 
     const originalText = malingCell.textContent;
-    if (shouldShow && currentSearch !== "") {
+    if (isVisible && currentSearch !== "") {
       const regex = new RegExp(currentSearch, "gi");
       malingCell.innerHTML = originalText.replace(
         regex,
@@ -1334,151 +1334,12 @@ function applyFilters() {
       malingCell.innerHTML = originalText;
     }
 
-    if (shouldShow) {
+    if (isVisible) {
       if (!counters[kategori]) counters[kategori] = 1;
       else counters[kategori]++;
       cells[0].textContent = counters[kategori];
     }
   });
-}
-
-function unlockEditing() {
-  const password = document.getElementById("editPassword").value;
-  const message = document.getElementById("unlockMessage");
-  if (password === "Hansa") {
-    message.textContent = "Redigering aktivert.";
-    enableEditing();
-    alert("🔓 Du har låst opp redigering!");
-    document.getElementById("editModeBanner").style.display = "block";
-    document.getElementById("addRowBtn").style.display = "inline-block";
-  } else {
-    message.textContent = "Feil passord.";
-  }
-}
-
-function enableEditing() {
-  const rows = document.querySelectorAll("#paintTable tbody tr");
-  rows.forEach(row => {
-    const cells = row.querySelectorAll("td");
-    if (cells.length >= 5) {
-      cells[1].setAttribute("contenteditable", "true"); // Kategori
-      cells[3].setAttribute("contenteditable", "true"); // Maling
-
-      const statusSelect = cells[4].querySelector("select");
-      if (statusSelect) {
-        statusSelect.style.display = "inline-block";
-        statusSelect.addEventListener("change", () => {
-          cells[4].childNodes[0].nodeValue = statusSelect.value + " ";
-          saveToLocalStorage();
-        });
-      }
-
-      const brandSelect = cells[2].querySelector("select");
-      if (brandSelect) {
-        brandSelect.style.display = "inline-block";
-        brandSelect.addEventListener("change", () => {
-          cells[2].childNodes[0].nodeValue = brandSelect.value + " ";
-          saveToLocalStorage();
-        });
-      }
-    }
-  });
-
-  const savedData = JSON.parse(localStorage.getItem("paintData") || "[]");
-  if (savedData.length === rows.length) {
-    rows.forEach((row, i) => {
-      const cells = row.querySelectorAll("td");
-      if (cells.length >= 5) {
-        cells[1].textContent = savedData[i][1];
-        cells[2].childNodes[0].nodeValue = savedData[i][2] + " ";
-        cells[3].textContent = savedData[i][3];
-        const statusSelect = cells[4].querySelector("select");
-        if (statusSelect) {
-          statusSelect.value = savedData[i][4];
-          cells[4].childNodes[0].nodeValue = savedData[i][4] + " ";
-        }
-        const brandSelect = cells[2].querySelector("select");
-        if (brandSelect) {
-          brandSelect.value = savedData[i][2];
-        }
-      }
-    });
-  }
-
-  document.querySelectorAll("#paintTable tbody td").forEach(cell => {
-    cell.addEventListener("blur", () => {
-      saveToLocalStorage();
-    });
-  });
-}
-
-function saveToLocalStorage() {
-  const rows = document.querySelectorAll("#paintTable tbody tr");
-  const allRows = Array.from(rows).map(row =>
-    Array.from(row.querySelectorAll("td")).map(cell => {
-      const select = cell.querySelector("select");
-      if (select) return select.value;
-      return cell.textContent.trim();
-    })
-  );
-  localStorage.setItem("paintData", JSON.stringify(allRows));
-}
-
-function resetTable() {
-  if (confirm("Er du sikker på at du vil tilbakestille alle endringer?")) {
-    localStorage.removeItem("paintData");
-    document.getElementById("editModeBanner").style.display = "none";
-    location.reload();
-  }
-}
-
-function addNewRow() {
-  const table = document.getElementById("paintTable").querySelector("tbody");
-  const row = document.createElement("tr");
-
-  const nrCell = document.createElement("td");
-  nrCell.textContent = "–";
-
-  const kategoriCell = document.createElement("td");
-  kategoriCell.textContent = "BASE";
-  kategoriCell.setAttribute("contenteditable", "true");
-
-  const brandCell = document.createElement("td");
-  const brandSelect = document.createElement("select");
-  ["Citadel", "Army Painter", "Vallejo", "AK", "Scale75", "Green Stuff World", "Wargames Atlantic"].forEach(b => {
-    const opt = document.createElement("option");
-    opt.value = opt.textContent = b;
-    brandSelect.appendChild(opt);
-  });
-  brandCell.textContent = "Citadel ";
-  brandSelect.value = "Citadel";
-  brandSelect.style.display = "inline-block";
-  brandSelect.addEventListener("change", () => {
-    brandCell.childNodes[0].nodeValue = brandSelect.value + " ";
-    saveToLocalStorage();
-  });
-  brandCell.appendChild(brandSelect);
-
-  const malingCell = document.createElement("td");
-  malingCell.textContent = "Ny maling";
-  malingCell.setAttribute("contenteditable", "true");
-
-  const statusCell = document.createElement("td");
-  const statusSelect = document.createElement("select");
-  statusSelect.innerHTML = '<option value="✅ Har">✅ Har</option><option value="❌ Mangler" selected>❌ Mangler</option>';
-  statusSelect.style.display = "inline-block";
-  statusSelect.addEventListener("change", () => {
-    statusCell.childNodes[0].nodeValue = statusSelect.value + " ";
-    saveToLocalStorage();
-  });
-  statusCell.textContent = "❌ Mangler ";
-  statusCell.appendChild(statusSelect);
-
-  row.append(nrCell, kategoriCell, brandCell, malingCell, statusCell);
-  table.appendChild(row);
-
-  applyFilters();
-  saveToLocalStorage();
 }
 </script>
 </body>
