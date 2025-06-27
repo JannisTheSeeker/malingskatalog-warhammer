@@ -1,1348 +1,1393 @@
 <!DOCTYPE html>
+
 <html lang="no">
-  <head>
-    <meta charset="utf-8"/>
-    <title>Malingskatalog – Warhammer 40K</title>
-    <style>
-      body {
-        background-color: #121212;
-        color: #f0f0f0;
-        font-family: 'Segoe UI', sans-serif;
-        margin: 1rem;
-      }
-      h1 {
-        color: #ffd700;
-      }
-      input[type="text"], input[type="password"] {
-        background-color: #222;
-        color: #fff;
-        border: 1px solid #555;
-        padding: 0.5rem;
-        width: 100%;
-        max-width: 400px;
-        font-size: 1rem;
+<head>
+<meta charset="utf-8"/>
+<title>
+   Malingskatalog – Warhammer 40K
+  </title>
+<style>
+   body {
+            background-color: #121212;
+            color: #f0f0f0;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 1rem;
+        }
+
+        h1 {
+            color: #ffd700;
+        }
+
+        input[type="text"], input[type="password"] {
+            background-color: #222;
+            color: #fff;
+            border: 1px solid #555;
+            padding: 0.5rem;
+            width: 100%;
+            max-width: 400px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #333;
+            color: #ffd700;
+            border: 1px solid #666;
+            padding: 0.4rem 0.75rem;
+            margin: 0.2rem;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #444;
+        }
+
+        button.active {
+            background-color: #ffd700;
+            color: #000;
+        }
+
+        .swatch {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            border: 1px solid #000;
+            vertical-align: middle;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            border: 1px solid #444;
+            padding: 0.5rem;
+            text-align: left;
+        }
+
+        th {
+            background-color: #222;
+        }
+  
+@media (max-width: 600px) {
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+    tr {
         margin-bottom: 1rem;
-        border-radius: 4px;
-      }
-      button {
-        background-color: #333;
-        color: #ffd700;
-        border: 1px solid #666;
-        padding: 0.4rem 0.75rem;
-        margin: 0.2rem;
-        cursor: pointer;
-        border-radius: 4px;
+        border: 1px solid #333;
+    }
+    td {
+        border: none;
+        border-bottom: 1px solid #444;
+        position: relative;
+        padding-left: 50%;
+    }
+    td::before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 45%;
+        padding-left: 0.5rem;
         font-weight: bold;
-      }
-      button:hover {
-        background-color: #444;
-      }
-      button.active {
-        background-color: #ffd700;
-        color: #000;
-      }
-      .swatch {
-        display: inline-block;
-        width: 16px;
-        height: 16px;
-        margin-right: 8px;
-        border: 1px solid #000;
-        vertical-align: middle;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 1rem;
-      }
-      th, td {
-        border: 1px solid #444;
-        padding: 0.5rem;
-        text-align: left;
-      }
-      th {
-        background-color: #222;
-      }
-    </style>
-  </head>
-  <body>
-    <div style="margin-bottom: 1rem;">
-      <input id="searchInput" type="text" placeholder="🔍 Søk i katalogen..." style="width: 100%; padding: 0.75rem; font-size: 1rem; border: 2px solid #ffd700; background-color: #1e1e1e; color: #e0e0e0; border-radius: 8px;"/>
-    </div>
-    <h1>🎨 Malingskatalog – Warhammer 40K</h1>
-    <div id="statusButtons" style="margin-bottom: 1rem;">
-      <button onclick="filterStatus('ALL')">Vis alle status</button>
-      <button onclick="filterStatus('✅')">✅ Har</button>
-      <button onclick="filterStatus('❌')">❌ Mangler</button>
-    </div>
-    <div id="filterButtons" style="margin-bottom: 1rem;">
-      <button onclick="filterCategory('ALL')">Vis alle</button>
-      <button onclick="filterCategory('BASE')">BASE</button>
-      <button onclick="filterCategory('CONTRAST')">CONTRAST</button>
-      <button onclick="filterCategory('LAYER')">LAYER</button>
-      <button onclick="filterCategory('OTHER')">OTHER</button>
-      <button onclick="filterCategory('SHADE')">SHADE</button>
-      <button onclick="filterCategory('SPRAY')">SPRAY</button>
-      <button onclick="filterCategory('TECHNICAL')">TECHNICAL</button>
-    </div>
-    <div style="margin: 1rem 0;">
-      <input id="editPassword" type="password" placeholder="🔒 Skriv inn passord for å redigere" style="padding: 0.5rem; max-width: 300px;"/>
-      <button onclick="unlockEditing()">Lås opp redigering</button>
-      <span id="unlockMessage" style="margin-left:1rem;color:#aaa;"></span>
-    </div>
-    <table id="paintTable">
-      <thead>
-        <tr>
-          <th>Kategori</th>
-          <th>Maling</th>
-          <th>Merke</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #0d0d0d; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Abaddon Black
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #ffb400; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Averland Sunset
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #916c41; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Balthasar Gold
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #a16a5e; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Bugmans Glow
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">Celestra Grey</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #e6e6e6; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Corax White
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #181818; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Corvus Black
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #866192; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Daemonette Hide
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #697e52; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Death Guard Green
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #4b3a28; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Dryad Bark
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">Grey Seer</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #7f8c8d; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Iron Hands Steel
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #6b6b6b; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Iron Warriors
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #f07900; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Jokaero Orange
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #1c3b68; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Kantor Blue
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #6a1f1c; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Khorne Red
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #8a8c8d; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Leadbelcher
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #0e3a28; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Lupercal Green
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #274e86; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Macragge Blue
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #3f3f3f; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Mechanicus Standard Grey
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #b92428; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Mephiston Red
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #dbcd9e; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Morghast Bone
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #6d4c31; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Mournfang Brown
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #2e1e3a; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Naggaroth Night
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #6e924f; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Orruk Flesh
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">Rakarth Flesh</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #c39738; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Retributor Armour
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #402e1e; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Rhinox Hide
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">Runelord Brass</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">Screamer Pink</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #a55e2b; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Screaming Bell
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #6e6243; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Steel Legion Drab
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">Thondia Brown</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">Thousand Sons Blue</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">Waaagh! Flesh</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">Warplock Bronze</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1a1a2e">
-          <td data-label="Kategori">BASE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #c2b280; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Zandri Dust
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#53354a">
-          <td data-label="Kategori">CONTRAST</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #f6c842; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Iyanden Yellow
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#53354a">
-          <td data-label="Kategori">CONTRAST</td>
-          <td data-label="Maling">Magos Purple</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#53354a">
-          <td data-label="Kategori">CONTRAST</td>
-          <td data-label="Maling">Skeleton Horde</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#53354a">
-          <td data-label="Kategori">CONTRAST</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #9a3056; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Volupus Pink
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #c3c3c3; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Administratum Grey
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">Ahriman Blue</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">Alaitoc Blue</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">Auric Armour Gold</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">Baneblade Brown</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">Brass Scorpion</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">Cadian Fleshtone</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #477abf; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Calgar Blue
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">Dark Reaper</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #e43a2f; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Evil Sunz Scarlet
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #9bbfd9; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Fenrisian Grey
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #ff884a; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Fire Dragon Bright
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #fff75b; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Flash Gitz Yellow
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #f6b4c5; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Fulgrim Pink
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">Gehenna's Gold</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #7356a2; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Genestealer Purple
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">Gorthor Brown</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">Hoeth Blue</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">Ironbreaker</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">Kabalite Green</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #b49d71; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Karak Stone
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #e7c7a1; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Kislev Flesh
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">Krieg Khaki</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">Liberator Gold</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #a5c286; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Nurgling Green
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">Ogryn Camo</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #f5efdf; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Pallid Wych Flesh
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #fffb8d; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Phalanx Yellow
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #e28ca5; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Pink Horror
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #7e9dad; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Russ Grey
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #f5f1c4; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Screaming Skull
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">Skavenblight Dinge</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #965e3f; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Skrag Brown
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #bbb6cc; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Slaanesh Grey
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">Sons of Horus Green</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">Stormvermin Fur</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">Sybarite Green</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">Sycorax Bronze</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #c2a86f; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Tallarn Sand
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #47aba2; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Temple Guard Blue
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">Thunderhawk Blue</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #f96b1c; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Troll Slayer Orange
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #cdd6db; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Ulthuan Grey
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #d7cfa3; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Ushabti Bone
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #82b96b; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Warboss Green
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">Wazdakka Red</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#16213e">
-          <td data-label="Kategori">LAYER</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #ffffff; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            White Scar
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1e1e1e">
-          <td data-label="Kategori">OTHER</td>
-          <td data-label="Maling">Matt White</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#0f3460">
-          <td data-label="Kategori">SHADE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #3e2f25; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Agrax Earthshade
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#0f3460">
-          <td data-label="Kategori">SHADE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #5c6941; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Athonian Camoshade
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#0f3460">
-          <td data-label="Kategori">SHADE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #4a6648; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Biel Tan Green
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#0f3460">
-          <td data-label="Kategori">SHADE</td>
-          <td data-label="Maling">Biel-Tan Green</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#0f3460">
-          <td data-label="Kategori">SHADE</td>
-          <td data-label="Maling">Carroburg Crimson</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#0f3460">
-          <td data-label="Kategori">SHADE</td>
-          <td data-label="Maling">Casandora Yellow</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#0f3460">
-          <td data-label="Kategori">SHADE</td>
-          <td data-label="Maling">Coelia Greenshade</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#0f3460">
-          <td data-label="Kategori">SHADE</td>
-          <td data-label="Maling">Drakenhof Nightshade</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#0f3460">
-          <td data-label="Kategori">SHADE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #5b3b75; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Druchii Violet
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#0f3460">
-          <td data-label="Kategori">SHADE</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #212121; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Nuln Oil
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#0f3460">
-          <td data-label="Kategori">SHADE</td>
-          <td data-label="Maling">Seraphim Sepia</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1e1e1e">
-          <td data-label="Kategori">SPRAY</td>
-          <td data-label="Maling">Chaos Black</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#1e1e1e">
-          <td data-label="Kategori">SPRAY</td>
-          <td data-label="Maling">Wraithbone</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#3e2c41">
-          <td data-label="Kategori">TECHNICAL</td>
-          <td data-label="Maling">Astrogranite</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#3e2c41">
-          <td data-label="Kategori">TECHNICAL</td>
-          <td data-label="Maling">Nihilakh Oxide</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#3e2c41">
-          <td data-label="Kategori">TECHNICAL</td>
-          <td data-label="Maling">Skarsnik Green</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#3e2c41">
-          <td data-label="Kategori">TECHNICAL</td>
-          <td data-label="Maling">Skullcrusher Brass</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#3e2c41">
-          <td data-label="Kategori">TECHNICAL</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #f05a28; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Squig Orange
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#3e2c41">
-          <td data-label="Kategori">TECHNICAL</td>
-          <td data-label="Maling">Stirland Mud</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#3e2c41">
-          <td data-label="Kategori">TECHNICAL</td>
-          <td data-label="Maling">
-            <span class="swatch" style="background-color: #e6e8e8; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;"></span>
-            Stormhost Silver
-          </td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-        <tr style="background-color:#3e2c41">
-          <td data-label="Kategori">TECHNICAL</td>
-          <td data-label="Maling">Tuskgor Fur</td>
-          <td data-label="Merke">Citadel</td>
-          <td class="har" data-label="Status">✅ Har</td>
-        </tr>
-      </tbody>
-    </table>
-    <div style="margin-top: 1rem;">
-      <button id="addButton" style="display:none;" onclick="addNewPaint()">➕ Legg til ny maling</button>
-      <button onclick="resetTable()">⟲ Nullstill</button>
-      <button onclick="downloadCSV()">💾 Last ned som CSV</button>
-      <small style="margin-left: 1rem; color: #aaa;">Endringer må lagres manuelt via GitHub.</small>
-    </div>
-    <script>
-      // Global state
-      let editingEnabled = false;
-      let currentSearchTerm = '';
-      let currentCategoryFilter = 'ALL';
-      let currentStatusFilter = 'ALL';
-      const categoryColors = {
-        'BASE': '#1a1a2e',
-        'CONTRAST': '#53354a',
-        'LAYER': '#16213e',
-        'OTHER': '#1e1e1e',
-        'SHADE': '#0f3460',
-        'SPRAY': '#1e1e1e',
-        'TECHNICAL': '#3e2c41'
-      };
-      // Load saved table state from localStorage if exists
-      const savedTable = localStorage.getItem('paintTableHTML');
-      if (savedTable) {
-        // Remove any highlight marks just in case
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = savedTable;
-        tempDiv.querySelectorAll('mark').forEach(mark => {
-          mark.replaceWith(document.createTextNode(mark.textContent));
-        });
-        document.querySelector('#paintTable tbody').innerHTML = tempDiv.innerHTML;
-      }
-      function filterTable() {
-        const search = currentSearchTerm.toLowerCase();
-        const rows = document.querySelectorAll('#paintTable tbody tr');
-        rows.forEach(row => {
-          let categoryMatch = (currentCategoryFilter === 'ALL');
-          let statusMatch = (currentStatusFilter === 'ALL');
-          let textMatch = true;
-          // Category filter
-          if (!categoryMatch) {
-            const catCell = row.querySelector('td[data-label="Kategori"]');
-            const catText = catCell ? catCell.textContent.trim() : '';
-            if (catText.toUpperCase() === currentCategoryFilter) {
-              categoryMatch = true;
-            } else {
-              categoryMatch = false;
-            }
-          }
-          // Status filter
-          if (!statusMatch) {
-            const statusCell = row.querySelector('td[data-label="Status"]');
-            let statusText = '';
-            if (statusCell) {
-              if (statusCell.querySelector('select')) {
-                statusText = statusCell.querySelector('select').value;
-              } else {
-                statusText = statusCell.textContent;
-              }
-            }
-            if (currentStatusFilter === '✅') {
-              statusMatch = statusText.includes('Har') || statusText.includes('✅');
-            } else if (currentStatusFilter === '❌') {
-              statusMatch = statusText.includes('Mangler') || statusText.includes('❌');
-            } else {
-              statusMatch = true;
-            }
-          }
-          // Search text filter
-          if (search !== '') {
-            textMatch = false;
-            row.querySelectorAll('td').forEach(cell => {
-              let cellText;
-              if (cell.querySelector('select')) {
-                // if cell has select (like brand or status in edit mode)
-                cellText = cell.querySelector('select').selectedOptions[0].textContent.toLowerCase();
-              } else {
-                cellText = cell.textContent.toLowerCase();
-              }
-              if (cellText.includes(search)) {
-                textMatch = true;
-              }
-              // Remove any old highlights first
-              if (cell.querySelector('mark')) {
-                cell.innerHTML = cell.textContent;
-              }
-              // Add highlight if matches
-              if (search !== '' && cellText.includes(search)) {
-                const regex = new RegExp(search, 'gi');
-                cell.innerHTML = cell.textContent.replace(regex, (m) => `<mark style='background-color: #ffd700; color: #000;'>${m}</mark>`);
-              }
-            });
-          } else {
-            // No search term, remove highlights
-            row.querySelectorAll('td').forEach(cell => {
-              if (cell.querySelector('mark')) {
-                cell.innerHTML = cell.textContent;
-              }
-            });
-            textMatch = true;
-          }
-          // Final display
-          if (categoryMatch && statusMatch && textMatch) {
-            row.style.display = '';
-          } else {
-            row.style.display = 'none';
-          }
-        });
-      }
-      function filterCategory(cat) {
-        currentCategoryFilter = cat;
-        // Update active state of buttons
-        const buttons = document.querySelectorAll('#filterButtons button');
-        buttons.forEach(btn => btn.classList.remove('active'));
-        buttons.forEach(btn => {
-          const text = btn.textContent.trim();
-          if (cat === 'ALL' && text === 'Vis alle') {
-            btn.classList.add('active');
-          } else if (text === cat) {
-            btn.classList.add('active');
-          }
-        });
-        filterTable();
-      }
-      function filterStatus(stat) {
-        currentStatusFilter = stat;
-        const buttons = document.querySelectorAll('#statusButtons button');
-        buttons.forEach(btn => btn.classList.remove('active'));
-        // Order: [All, Har, Mangler]
-        if (stat === 'ALL') {
-          buttons[0].classList.add('active');
-        } else if (stat === '✅') {
-          buttons[1].classList.add('active');
-        } else if (stat === '❌') {
-          buttons[2].classList.add('active');
-        }
-        filterTable();
-      }
-      function unlockEditing() {
-        const pass = document.getElementById('editPassword').value;
-        if (pass === 'Hansa') {
-          editingEnabled = true;
-          document.getElementById('editPassword').disabled = true;
-          const unlockBtn = document.querySelector('button[onclick^="unlockEditing"]');
-          if (unlockBtn) {
-            unlockBtn.textContent = 'Redigeringsmodus aktiv';
-            unlockBtn.disabled = true;
-          }
-          const msg = document.getElementById('unlockMessage');
-          msg.textContent = 'Redigeringsmodus er nå aktiv!';
-          msg.style.color = '#ffd700';
-          // Show add button
-          const addBtn = document.getElementById('addButton');
-          if (addBtn) addBtn.style.display = 'inline-block';
-          // Enable editing on all rows
-          document.querySelectorAll('#paintTable tbody tr').forEach(row => {
-            const catCell = row.querySelector('td[data-label="Kategori"]');
-            const nameCell = row.querySelector('td[data-label="Maling"]');
-            const brandCell = row.querySelector('td[data-label="Merke"]');
-            const statusCell = row.querySelector('td[data-label="Status"]');
-            if (catCell && nameCell && brandCell && statusCell) {
-              // Create category dropdown
-              const currentCat = catCell.textContent.trim();
-              const catSelect = document.createElement('select');
-              ['BASE','CONTRAST','LAYER','OTHER','SHADE','SPRAY','TECHNICAL'].forEach(cat => {
-                const opt = document.createElement('option');
-                opt.value = cat;
-                opt.textContent = cat;
-                if (cat === currentCat) opt.selected = true;
-                catSelect.appendChild(opt);
-              });
-              catCell.innerHTML = '';
-              catCell.appendChild(catSelect);
-              catSelect.addEventListener('change', function() {
-                // update background color
-                const newCat = this.value;
-                row.style.backgroundColor = categoryColors[newCat] || '#1e1e1e';
-                saveTable();
-                filterTable();
-              });
-              // Make name cell editable
-              nameCell.contentEditable = true;
-              nameCell.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  this.blur();
-                }
-              });
-              nameCell.addEventListener('blur', function() {
-                saveTable();
-                filterTable();
-              });
-              // Create brand dropdown
-              const currentBrand = brandCell.textContent.trim();
-              const brandSelect = document.createElement('select');
-              ['Citadel','Army Painter','Vallejo','Other'].forEach(brand => {
-                const opt = document.createElement('option');
-                opt.value = brand;
-                opt.textContent = brand;
-                if (brand === currentBrand) opt.selected = true;
-                brandSelect.appendChild(opt);
-              });
-              brandCell.innerHTML = '';
-              brandCell.appendChild(brandSelect);
-              brandSelect.addEventListener('change', function() {
-                saveTable();
-                filterTable();
-              });
-              // Create status dropdown
-              const currentStatus = statusCell.textContent.includes('Mangler') || statusCell.textContent.includes('❌') ? 'Mangler' : 'Har';
-              const statusSelect = document.createElement('select');
-              const optHar = document.createElement('option');
-              optHar.value = 'Har';
-              optHar.textContent = '✅ Har';
-              const optMang = document.createElement('option');
-              optMang.value = 'Mangler';
-              optMang.textContent = '❌ Mangler';
-              if (currentStatus === 'Har') {
-                optHar.selected = true;
-              } else {
-                optMang.selected = true;
-              }
-              statusSelect.appendChild(optHar);
-              statusSelect.appendChild(optMang);
-              statusCell.innerHTML = '';
-              statusCell.appendChild(statusSelect);
-              statusSelect.addEventListener('change', function() {
-                // Option text includes emoji already
-                saveTable();
-                filterTable();
-              });
-            }
-          });
-        } else {
-          const msg = document.getElementById('unlockMessage');
-          msg.textContent = 'Feil passord!';
-          msg.style.color = '#f88';
-        }
-      }
-      function addNewPaint() {
-        if (!editingEnabled) return;
-        const tbody = document.querySelector('#paintTable tbody');
-        if (!tbody) return;
-        // Determine default category and brand
-        let newCategory = 'OTHER';
-        if (currentCategoryFilter !== 'ALL') {
-          newCategory = currentCategoryFilter;
-        }
-        // If filter is ALL, default to OTHER, else use current category filter
-        let newBrand = 'Citadel';
-        if (newCategory === 'OTHER') {
-          newBrand = 'Other';
-        } else {
-          newBrand = 'Citadel';
-        }
-        // Default status is missing
-        const newStatus = '❌ Mangler';
-        // Create row element
-        const newRow = document.createElement('tr');
-        newRow.style.backgroundColor = categoryColors[newCategory] || '#1e1e1e';
-        newRow.innerHTML = `
-          <td data-label="Kategori">${newCategory}</td>
-          <td data-label="Maling"></td>
-          <td data-label="Merke">${newBrand}</td>
-          <td data-label="Status">${newStatus}</td>
-        `;
-        tbody.appendChild(newRow);
-        // If editing mode still active, convert new row cells to editable/select:
-        if (editingEnabled) {
-          const catCell = newRow.querySelector('td[data-label="Kategori"]');
-          const nameCell = newRow.querySelector('td[data-label="Maling"]');
-          const brandCell = newRow.querySelector('td[data-label="Merke"]');
-          const statusCell = newRow.querySelector('td[data-label="Status"]');
-          if (catCell && nameCell && brandCell && statusCell) {
-            // Create category dropdown for new row
-            const catSelect = document.createElement('select');
-            ['BASE','CONTRAST','LAYER','OTHER','SHADE','SPRAY','TECHNICAL'].forEach(cat => {
-              const opt = document.createElement('option');
-              opt.value = cat;
-              opt.textContent = cat;
-              if (cat === newCategory) opt.selected = true;
-              catSelect.appendChild(opt);
-            });
-            catCell.innerHTML = '';
-            catCell.appendChild(catSelect);
-            catSelect.addEventListener('change', function() {
-              newRow.style.backgroundColor = categoryColors[this.value] || '#1e1e1e';
-              saveTable();
-              filterTable();
-            });
-            // Make name cell editable
-            nameCell.contentEditable = true;
-            nameCell.addEventListener('keydown', function(e) {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                this.blur();
-              }
-            });
-            nameCell.addEventListener('blur', function() {
-              saveTable();
-              filterTable();
-            });
-            nameCell.focus();
-            // Create brand dropdown
-            const brandSelect = document.createElement('select');
-            ['Citadel','Army Painter','Vallejo','Other'].forEach(brand => {
-              const opt = document.createElement('option');
-              opt.value = brand;
-              opt.textContent = brand;
-              if (brand === newBrand) opt.selected = true;
-              brandSelect.appendChild(opt);
-            });
-            brandCell.innerHTML = '';
-            brandCell.appendChild(brandSelect);
-            brandSelect.addEventListener('change', function() {
-              saveTable();
-              filterTable();
-            });
-            // Create status dropdown
-            const statusSelect = document.createElement('select');
-            const optHar = document.createElement('option');
-            optHar.value = 'Har';
-            optHar.textContent = '✅ Har';
-            const optMang = document.createElement('option');
-            optMang.value = 'Mangler';
-            optMang.textContent = '❌ Mangler';
-            // default missing
-            optMang.selected = true;
-            statusSelect.appendChild(optHar);
-            statusSelect.appendChild(optMang);
-            statusCell.innerHTML = '';
-            statusCell.appendChild(statusSelect);
-            statusSelect.addEventListener('change', function() {
-              saveTable();
-              filterTable();
-            });
-          }
-        }
-        saveTable();
-        filterTable();
-      }
-      function saveTable() {
-        const tbody = document.querySelector('#paintTable tbody');
-        if (!tbody) return;
-        let html = tbody.innerHTML;
-        // Remove highlight marks
-        html = html.replace(/<mark[^>]*>(.*?)<\/mark>/gi, '$1');
-        localStorage.setItem('paintTableHTML', html);
-      }
-      function resetTable() {
-        localStorage.removeItem('paintTableHTML');
-        location.reload();
-      }
-      function downloadCSV() {
-        let csvContent = '';
-        // Headers
-        const headers = Array.from(document.querySelectorAll('#paintTable thead th')).map(th => th.textContent.trim());
-        csvContent += headers.join(',') + '\\n';
-        // Rows
-        document.querySelectorAll('#paintTable tbody tr').forEach(tr => {
-          const cells = tr.querySelectorAll('td');
-          const rowData = [];
-          cells.forEach(cell => {
-            let cellText = '';
-            if (cell.querySelector('select')) {
-              cellText = cell.querySelector('select').selectedOptions[0].textContent.trim();
-            } else {
-              cellText = cell.textContent.trim();
-            }
-            // Replace newlines if any
-            cellText = cellText.replace(/\\n/g, ' ');
-            // Escape quotes
-            if (cellText.includes('"')) {
-              cellText = cellText.replace(/"/g, '""');
-            }
-            // Quote if necessary
-            if (cellText.includes(',') || cellText.includes('\\n') || cellText.includes('"')) {
-              cellText = '"' + cellText + '"';
-            }
-            rowData.push(cellText);
-          });
-          csvContent += rowData.join(',') + '\\n';
-        });
-        const encodedUri = encodeURI('data:text/csv;charset=utf-8,' + csvContent);
-        const link = document.createElement('a');
-        link.setAttribute('href', encodedUri);
-        link.setAttribute('download', 'malingskatalog.csv');
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
-      // Oppdater søkeresultater ved input
-      document.getElementById("searchInput").addEventListener("input", function() {
-        currentSearchTerm = this.value;
-        filterTable();
-      });
-    </script>
-  </body>
+        white-space: nowrap;
+        color: #aaa;
+        content: attr(data-label);
+    }
+    th {
+        display: none;
+    }
+}
+
+td[contenteditable="true"] {
+  background-color: #333333;
+  border: 1px solid #ffd700;
+}
+
+select {
+  font-size: 1rem;
+  padding: 6px 10px;
+  background-color: #1e1e1e;
+  color: #fff;
+  border: 1px solid #888;
+  border-radius: 5px;
+}
+@media (max-width: 600px) {
+  select {
+    width: 100%;
+    font-size: 1.1rem;
+    padding: 10px;
+  }
+}
+</style>
+</head>
+<body><div id="editModeBanner" style="display:none;background:#ffd700;color:#000;padding:0.75rem;font-weight:bold;text-align:center;border-radius:8px;margin-bottom:1rem;">✏️ Redigeringsmodus aktiv</div>
+<h1>
+   🎨 Malingskatalog – Warhammer 40K
+  </h1>
+<div id="statusButtons" style="margin-bottom: 1rem;">
+<button onclick="filterStatus('ALL')">
+    Vis alle status
+   </button>
+<button onclick="filterStatus('✅')">
+    ✅ Har
+   </button>
+<button onclick="filterStatus('❌')">
+    ❌ Mangler
+   </button>
+</div>
+<div id="filterButtons" style="margin-bottom: 1rem;">
+<button onclick="filterCategory('ALL')">
+    Vis alle
+   </button>
+<button onclick="filterCategory('BASE')">
+    BASE
+   </button>
+<button onclick="filterCategory('CONTRAST')">
+    CONTRAST
+   </button>
+<button onclick="filterCategory('LAYER')">
+    LAYER
+   </button>
+<button onclick="filterCategory('OTHER')">
+    OTHER
+   </button>
+<button onclick="filterCategory('SHADE')">
+    SHADE
+   </button>
+<button onclick="filterCategory('SPRAY')">
+    SPRAY
+   </button>
+<button onclick="filterCategory('TECHNICAL')">
+    TECHNICAL
+   </button>
+</div><button id="addRowBtn" onclick="addNewRow()" style="display:none;margin-left:1rem;">➕ Legg til ny maling</button><div style="margin: 1rem 0; font-size: 0.9rem; color: #999;">
+<input id="editPassword" placeholder="🔒 Skriv inn passord for å redigere" style="padding: 0.5rem; max-width: 300px;" type="password"/>
+<button onclick="unlockEditing()">
+    Lås opp redigering
+   </button>
+<span id="unlockMessage" style="margin-left:1rem;color:#aaa;">
+</span>
+<button onclick="resetTable()">🔄 Tilbakestill til original</button></div>
+<div style="margin-bottom: 1rem; background-color: #222; padding: 1rem; border: 2px solid #ffd700; border-radius: 8px;">
+<input id="searchInput" placeholder="🔍 Søk i katalogen..." style="width: 100%; padding: 0.75rem; font-size: 1rem; border: 2px solid #ffd700; 
+                background-color: #1e1e1e; color: #e0e0e0; border-radius: 8px;" type="text"/>
+</div><table id="paintTable">
+<thead>
+<tr><th>#</th><th>Kategori</th><th>Merke</th><th>Maling</th><th>Status</th></tr>
+</thead>
+<tbody><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #0d0d0d; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Abaddon Black
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #ffb400; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Averland Sunset
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #916c41; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Balthasar Gold
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #a16a5e; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Bugmans Glow
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #c4c6c8"></span>
+      Celestra Grey
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #e6e6e6; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Corax White
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #181818; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Corvus Black
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #866192; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Daemonette Hide
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #697e52; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Death Guard Green
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #4b3a28; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Dryad Bark
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #d7d7d7"></span>
+      Grey Seer
+     </td>
+<td class="har" data-label="Status">✅ Har <select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #7f8c8d; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Iron Hands Steel
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #6b6b6b; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Iron Warriors
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #f07900; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Jokaero Orange
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #1c3b68; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Kantor Blue
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #6a1f1c; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Khorne Red
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #8a8c8d; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Leadbelcher
+     </td>
+<td class="har" data-label="Status">✅ Har <select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #0e3a28; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Lupercal Green
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #274e86; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Macragge Blue
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #3f3f3f; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Mechanicus Standard Grey
+     </td>
+<td class="har" data-label="Status">✅ Har <select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #b92428; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Mephiston Red
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #dbcd9e; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Morghast Bone
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #6d4c31; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Mournfang Brown
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #2e1e3a; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Naggaroth Night
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #6e924f; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Orruk Flesh
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #d8d1c2"></span>
+      Rakarth Flesh
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #c39738; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Retributor Armour
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #402e1e; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Rhinox Hide
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #80664b"></span>
+      Runelord Brass
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #801b4a"></span>
+      Screamer Pink
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #a55e2b; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Screaming Bell
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #6e6243; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Steel Legion Drab
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #6e4d34"></span>
+      Thondia Brown
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #005f87"></span>
+      Thousand Sons Blue
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #004f3b"></span>
+      Waaagh! Flesh
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #3c2f2e"></span>
+      Warplock Bronze
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1a1a2e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      BASE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #c2b280; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Zandri Dust
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#53354a"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      CONTRAST
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #f6c842; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Iyanden Yellow
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#53354a"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      CONTRAST
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #a86da6"></span>
+      Magos Purple
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#53354a"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      CONTRAST
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #b9a573"></span>
+      Skeleton Horde
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#53354a"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      CONTRAST
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #9a3056; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Volupus Pink
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #c3c3c3; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Administratum Grey
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #0079a1"></span>
+      Ahriman Blue
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #005ba1"></span>
+      Alaitoc Blue
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #c3963d"></span>
+      Auric Armour Gold
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #a79884"></span>
+      Baneblade Brown
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #7c5832"></span>
+      Brass Scorpion
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #d6a470; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Cadian Fleshtone
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #477abf; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Calgar Blue
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #2f4a56"></span>
+      Dark Reaper
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #a5a5a5; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Dawnstone
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #c78454; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Deathclaw Brown
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #5a3226; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Doombull Brown
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #d14aad; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Emperors Children
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #4a4a4a"></span>
+      Eshin Grey
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #e43a2f; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Evil Sunz Scarlet
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #9bbfd9; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Fenrisian Grey
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #ff884a; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Fire Dragon Bright
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #fff75b; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Flash Gitz Yellow
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #f6b4c5; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Fulgrim Pink
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #bc862e"></span>
+      Gehenna's Gold
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #7356a2; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Genestealer Purple
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #5d4534"></span>
+      Gorthor Brown
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #5d8ecb"></span>
+      Hoeth Blue
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #c0c0c0"></span>
+      Ironbreaker
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #005b4f"></span>
+      Kabalite Green
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #b49d71; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Karak Stone
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #e7c7a1; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Kislev Flesh
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #c9c6a6"></span>
+      Krieg Khaki
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #d5b04a"></span>
+      Liberator Gold
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #a5c286; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Nurgling Green
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #9aa761"></span>
+      Ogryn Camo
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #f5efdf; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Pallid Wych Flesh
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #fffb8d; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Phalanx Yellow
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #e28ca5; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Pink Horror
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #7e9dad; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Russ Grey
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #f5f1c4; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Screaming Skull
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #5d5e5a"></span>
+      Skavenblight Dinge
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #965e3f; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Skrag Brown
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #bbb6cc; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Slaanesh Grey
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #2e4d44"></span>
+      Sons of Horus Green
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #6e6259"></span>
+      Stormvermin Fur
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #33b27b"></span>
+      Sybarite Green
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #b48253"></span>
+      Sycorax Bronze
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #c2a86f; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Tallarn Sand
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #47aba2; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Temple Guard Blue
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #455d74"></span>
+      Thunderhawk Blue
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #f96b1c; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Troll Slayer Orange
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #cdd6db; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Ulthuan Grey
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #d7cfa3; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Ushabti Bone
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #82b96b; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Warboss Green
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #a02424"></span>
+      Wazdakka Red
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #ffffff; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      White Scar
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #ff5340; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Wild Rider Red
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #4b2e6f; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Xereus Purple
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#16213e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      LAYER
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #f7d560; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Yriel Yellow
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1e1e1e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      OTHER
+     </td>
+<td data-label="Maling">
+      Matt White
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#0f3460"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      SHADE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #3e2f25; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Agrax Earthshade
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#0f3460"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      SHADE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #5c6941; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Athonian Camoshade
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#0f3460"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      SHADE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #4a6648; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Biel Tan Green
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#0f3460"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      SHADE
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #2e5d3b"></span>
+      Biel-Tan Green
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#0f3460"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      SHADE
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #6e1d1d"></span>
+      Carroburg Crimson
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#0f3460"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      SHADE
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #e5b900"></span>
+      Casandora Yellow
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#0f3460"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      SHADE
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #214d4a"></span>
+      Coelia Greenshade
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#0f3460"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      SHADE
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #1d2b4f"></span>
+      Drakenhof Nightshade
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#0f3460"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      SHADE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #5b3b75; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Druchii Violet
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#0f3460"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      SHADE
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #212121; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Nuln Oil
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#0f3460"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      SHADE
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #9c573c"></span>
+      Reikland Fleshshade
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#0f3460"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      SHADE
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #a8824e"></span>
+      Seraphim Sepia
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1e1e1e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      SPRAY
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #0d0d0d"></span>
+      Chaos Black
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#1e1e1e"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      SPRAY
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #e5dac1"></span>
+      Wraithbone
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#3e2c41"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      TECHNICAL
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #7e7e7e"></span>
+      Astrogranite
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#3e2c41"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      TECHNICAL
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #9bd3cb"></span>
+      Nihilakh Oxide
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#3e2c41"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      TECHNICAL
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #b0cc76"></span>
+      Skarsnik Green
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#3e2c41"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      TECHNICAL
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #8e6f4e"></span>
+      Skullcrusher Brass
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#3e2c41"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      TECHNICAL
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #f05a28; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Squig Orange
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#3e2c41"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      TECHNICAL
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #4a372a"></span>
+      Stirland Mud
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#3e2c41"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      TECHNICAL
+     </td>
+<td data-label="Maling">
+<span class="swatch" style="background-color: #e6e8e8; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
+</span>
+      Stormhost Silver
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr style="background-color:#3e2c41"><td>–</td>
+<td>Citadel <select style="display:none;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td data-label="Kategori">
+      TECHNICAL
+     </td>
+<td data-label="Maling"><span class="swatch" style="background-color: #9c6153"></span>
+      Tuskgor Fur
+     </td>
+<td class="har" data-label="Status">✅ Har<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td>
+</tr><tr><td>–</td><td>SPRAY</td><td><select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td><span class="swatch" style="background-color: #c8c8c8"></span> Grey Seer</td><td><select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td></tr><tr><td>–</td><td>SPRAY</td><td><select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td><span class="swatch" style="background-color: #7f8c8d"></span> Leadbelcher</td><td><select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td></tr><tr><td>–</td><td>SPRAY</td><td><select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="Citadel">Citadel</option><option value="Army Painter">Army Painter</option><option value="Vallejo">Vallejo</option><option value="AK">AK</option><option value="Scale75">Scale75</option><option value="Green Stuff World">Green Stuff World</option><option value="Wargames Atlantic">Wargames Atlantic</option></select></td><td><span class="swatch" style="background-color: #5e5e5e"></span> Mechanicus Standard Grey</td><td><select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;"><option selected="selected" value="✅ Har">✅ Har</option><option value="❌ Mangler">❌ Mangler</option></select></td></tr><tr><td></td><td>SPRAY</td><td>
+<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;">
+<option selected="" value="Citadel">Citadel</option>
+<option value="Army Painter">Army Painter</option>
+<option value="Vallejo">Vallejo</option>
+<option value="AK">AK</option>
+<option value="Scale75">Scale75</option>
+<option value="Green Stuff World">Green Stuff World</option>
+<option value="Wargames Atlantic">Wargames Atlantic</option>
+</select>
+</td><td>Grey Seer</td><td>
+<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;">
+<option selected="" value="✅ Har">✅ Har</option>
+<option value="❌ Mangler">❌ Mangler</option>
+</select>
+</td><td><div class="swatch" style="background-color:#dfe2e5;"></div></td></tr><tr><td></td><td>SPRAY</td><td>
+<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;">
+<option selected="" value="Citadel">Citadel</option>
+<option value="Army Painter">Army Painter</option>
+<option value="Vallejo">Vallejo</option>
+<option value="AK">AK</option>
+<option value="Scale75">Scale75</option>
+<option value="Green Stuff World">Green Stuff World</option>
+<option value="Wargames Atlantic">Wargames Atlantic</option>
+</select>
+</td><td>Mechanicus Standard Grey</td><td>
+<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;">
+<option selected="" value="✅ Har">✅ Har</option>
+<option value="❌ Mangler">❌ Mangler</option>
+</select>
+</td><td><div class="swatch" style="background-color:#5f6a71;"></div></td></tr><tr><td></td><td>SPRAY</td><td>
+<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;">
+<option selected="" value="Citadel">Citadel</option>
+<option value="Army Painter">Army Painter</option>
+<option value="Vallejo">Vallejo</option>
+<option value="AK">AK</option>
+<option value="Scale75">Scale75</option>
+<option value="Green Stuff World">Green Stuff World</option>
+<option value="Wargames Atlantic">Wargames Atlantic</option>
+</select>
+</td><td>Leadbelcher</td><td>
+<select style="background:#222; color:#fff; border:1px solid #666; border-radius:4px; padding:2px;">
+<option selected="" value="✅ Har">✅ Har</option>
+<option value="❌ Mangler">❌ Mangler</option>
+</select>
+</td><td><div class="swatch" style="background-color:#888c8f;"></div></td></tr></tbody>
+</table>
+<div style="margin-top: 1rem;">
+<button onclick="downloadCSV()">
+    💾 Last ned som CSV
+   </button>
+<small style="margin-left: 1rem; color: #aaa;">
+    Endringer må lagres manuelt via GitHub.
+   </small>
+</div>
+<script>
+let currentCategory = "ALL";
+let currentStatus = "ALL";
+let currentSearch = "";
+
+function filterCategory(category) {
+  currentCategory = category;
+  applyFilters();
+}
+
+function filterStatus(status) {
+  currentStatus = status;
+  applyFilters();
+}
+
+document.getElementById("searchInput").addEventListener("input", function () {
+  currentSearch = this.value.toLowerCase();
+  applyFilters();
+});
+
+function applyFilters() {
+  const rows = document.querySelectorAll("#paintTable tbody tr");
+  let counters = {};
+  rows.forEach(row => {
+    const cells = row.querySelectorAll("td");
+    if (cells.length < 5) return;
+
+    const kategori = cells[1].textContent.trim().toUpperCase();
+    const malingCell = cells[3];
+    const malingText = malingCell.textContent.toLowerCase();
+
+    const statusSelect = cells[4].querySelector("select");
+    const status = statusSelect ? statusSelect.value : cells[4].textContent.trim();
+
+    const matchCategory = (currentCategory === "ALL" || kategori === currentCategory);
+    const matchStatus = (currentStatus === "ALL" || status.includes(currentStatus));
+    const matchSearch = (currentSearch === "" || malingText.includes(currentSearch));
+
+    const visible = matchCategory && matchStatus && matchSearch;
+    row.style.display = visible ? "" : "none";
+
+    const originalText = malingCell.textContent;
+    if (visible && currentSearch !== "") {
+      const regex = new RegExp(currentSearch, "gi");
+      malingCell.innerHTML = originalText.replace(
+        regex,
+        match => `<mark style='background-color: #ffd700; color: #000;'>${match}</mark>`
+      );
+    } else {
+      malingCell.innerHTML = originalText;
+    }
+
+    if (visible) {
+      if (!counters[kategori]) counters[kategori] = 1;
+      else counters[kategori]++;
+      cells[0].textContent = counters[kategori];
+    }
+  });
+}
+</script>
+</body>
 </html>
