@@ -1526,6 +1526,7 @@ window.unlockEditing = function() {
     message.textContent = "Redigering aktivert.";
     enableEditing();
     alert("🔓 Du har låst opp redigering!");
+    document.getElementById("editModeBanner").style.display = "block";
   } else {
     message.textContent = "Feil passord.";
   }
@@ -1565,11 +1566,10 @@ function enableEditing() {
 function resetTable() {
   if (confirm("Er du sikker på at du vil tilbakestille alle endringer?")) {
     localStorage.removeItem("paintData");
+    document.getElementById("editModeBanner").style.display = "none";
     location.reload();
   }
 }
-
-  document.getElementById("editModeBanner").style.display = "block";
 </script>
 </body>
 </html>
