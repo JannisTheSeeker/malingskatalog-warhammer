@@ -1451,6 +1451,48 @@ document.addEventListener("DOMContentLoaded", () => {
   const observer = new MutationObserver(updateRowNumbers);
   observer.observe(document.querySelector("#paintTable tbody"), { childList: true, subtree: true });
 });
+
+document.getElementById("searchInput").addEventListener("input", function () {
+  currentSearch = this.value.toLowerCase();
+  applyFilters();
+});
+
+function applyFilters() {
+  const rows = document.querySelectorAll("#paintTable tbody tr");
+  let counters = {};
+  rows.forEach(row => {
+    const cells = row.querySelectorAll("td");
+    if (cells.length < 5) return;
+
+    const kategori = cells[1].textContent.trim().toUpperCase();
+    const malingText = cells[3].textContent.toLowerCase();
+    const status = cells[4].textContent;
+
+    let matchesCategory = (currentCategory === "ALL" || kategori === currentCategory);
+    let matchesStatus = (currentStatus === "ALL" || status.includes(currentStatus));
+    let matchesSearch = (currentSearch === "" || malingText.includes(currentSearch));
+
+    row.style.display = (matchesCategory && matchesStatus && matchesSearch) ? "" : "none";
+
+    // Fjern eventuell tidligere markering
+    const innerCell = cells[3];
+    const originalText = innerCell.textContent;
+    const matchRegex = new RegExp(currentSearch, "gi");
+    if (matchesSearch && currentSearch !== "") {
+      const marked = originalText.replace(matchRegex, match => `<mark style='background-color: #ffd700; color: #000;'>${match}</mark>`);
+      innerCell.innerHTML = marked;
+    } else {
+      innerCell.innerHTML = originalText;
+    }
+
+    // Tell per kategori
+    if (row.style.display === "") {
+      if (!counters[kategori]) counters[kategori] = 1;
+      else counters[kategori]++;
+      cells[0].textContent = counters[kategori];
+    }
+  });
+}
 </script>
 </body>
 </html>
