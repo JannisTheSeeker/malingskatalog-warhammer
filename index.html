@@ -275,6 +275,19 @@
         });
     }
 
+
+    function filterStatus(status) {
+        const rows = document.querySelectorAll("#paintTable tbody tr");
+        rows.forEach(row => {
+            const statusCell = row.querySelector("td:last-child");
+            if (status === "ALL" || (statusCell && statusCell.textContent.includes(status))) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
+
 </script>
 </body>
 </html>
