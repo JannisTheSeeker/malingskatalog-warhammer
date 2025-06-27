@@ -1314,17 +1314,17 @@ function applyFilters() {
     const kategori = cells[1].textContent.trim().toUpperCase();
     const malingCell = cells[3];
     const malingText = malingCell.textContent.toLowerCase();
-    const statusText = cells[4].textContent;
+    const status = cells[4].textContent;
 
     const matchCategory = (currentCategory === "ALL" || kategori === currentCategory);
-    const matchStatus = (currentStatus === "ALL" || statusText.includes(currentStatus));
+    const matchStatus = (currentStatus === "ALL" || status.includes(currentStatus));
     const matchSearch = (currentSearch === "" || malingText.includes(currentSearch));
 
-    const isVisible = matchCategory && matchStatus && matchSearch;
-    row.style.display = isVisible ? "" : "none";
+    const visible = matchCategory && matchStatus && matchSearch;
+    row.style.display = visible ? "" : "none";
 
     const originalText = malingCell.textContent;
-    if (isVisible && currentSearch !== "") {
+    if (visible && currentSearch !== "") {
       const regex = new RegExp(currentSearch, "gi");
       malingCell.innerHTML = originalText.replace(
         regex,
@@ -1334,12 +1334,150 @@ function applyFilters() {
       malingCell.innerHTML = originalText;
     }
 
-    if (isVisible) {
+    if (visible) {
       if (!counters[kategori]) counters[kategori] = 1;
       else counters[kategori]++;
       cells[0].textContent = counters[kategori];
     }
   });
+}
+
+function unlockEditing() {
+  const password = document.getElementById("editPassword").value;
+  const message = document.getElementById("unlockMessage");
+  if (password === "Hansa") {
+    message.textContent = "Redigering aktivert.";
+    document.getElementById("editModeBanner").style.display = "block";
+    document.getElementById("addRowBtn").style.display = "inline-block";
+    enableEditing();
+    alert("🔓 Du har låst opp redigering!");
+  } else {
+    message.textContent = "Feil passord.";
+  }
+}
+
+function enableEditing() {
+  const rows = document.querySelectorAll("#paintTable tbody tr");
+  rows.forEach(row => {
+    const cells = row.querySelectorAll("td");
+    if (cells.length >= 5) {
+      cells[1].setAttribute("contenteditable", "true"); // kategori
+      cells[3].setAttribute("contenteditable", "true"); // maling
+
+      const statusSelect = cells[4].querySelector("select");
+      if (statusSelect) {
+        statusSelect.style.display = "inline-block";
+        statusSelect.addEventListener("change", () => {
+          cells[4].childNodes[0].nodeValue = statusSelect.value + " ";
+          saveToLocalStorage();
+        });
+      }
+
+      const brandSelect = cells[2].querySelector("select");
+      if (brandSelect) {
+        brandSelect.style.display = "inline-block";
+        brandSelect.addEventListener("change", () => {
+          cells[2].childNodes[0].nodeValue = brandSelect.value + " ";
+          saveToLocalStorage();
+        });
+      }
+    }
+  });
+
+  const savedData = JSON.parse(localStorage.getItem("paintData") || "[]");
+  if (savedData.length === rows.length) {
+    rows.forEach((row, i) => {
+      const cells = row.querySelectorAll("td");
+      if (cells.length >= 5) {
+        cells[1].textContent = savedData[i][1];
+        cells[2].childNodes[0].nodeValue = savedData[i][2] + " ";
+        cells[3].textContent = savedData[i][3];
+        const statusSelect = cells[4].querySelector("select");
+        if (statusSelect) {
+          statusSelect.value = savedData[i][4];
+          cells[4].childNodes[0].nodeValue = savedData[i][4] + " ";
+        }
+        const brandSelect = cells[2].querySelector("select");
+        if (brandSelect) {
+          brandSelect.value = savedData[i][2];
+        }
+      }
+    });
+  }
+
+  document.querySelectorAll("#paintTable tbody td").forEach(cell => {
+    cell.addEventListener("blur", () => {
+      saveToLocalStorage();
+    });
+  });
+}
+
+function saveToLocalStorage() {
+  const rows = document.querySelectorAll("#paintTable tbody tr");
+  const data = Array.from(rows).map(row =>
+    Array.from(row.querySelectorAll("td")).map(cell => {
+      const select = cell.querySelector("select");
+      if (select) return select.value;
+      return cell.textContent.trim();
+    })
+  );
+  localStorage.setItem("paintData", JSON.stringify(data));
+}
+
+function resetTable() {
+  if (confirm("Er du sikker på at du vil tilbakestille alle endringer?")) {
+    localStorage.removeItem("paintData");
+    location.reload();
+  }
+}
+
+function addNewRow() {
+  const tbody = document.querySelector("#paintTable tbody");
+  const row = document.createElement("tr");
+
+  const nr = document.createElement("td");
+  nr.textContent = "–";
+
+  const kategori = document.createElement("td");
+  kategori.textContent = "BASE";
+  kategori.setAttribute("contenteditable", "true");
+
+  const brand = document.createElement("td");
+  brand.textContent = "Citadel ";
+  const bSelect = document.createElement("select");
+  ["Citadel", "Army Painter", "Vallejo", "AK", "Scale75", "Green Stuff World", "Wargames Atlantic"].forEach(m => {
+    const opt = document.createElement("option");
+    opt.value = opt.textContent = m;
+    bSelect.appendChild(opt);
+  });
+  bSelect.value = "Citadel";
+  bSelect.style.display = "inline-block";
+  bSelect.addEventListener("change", () => {
+    brand.childNodes[0].nodeValue = bSelect.value + " ";
+    saveToLocalStorage();
+  });
+  brand.appendChild(bSelect);
+
+  const maling = document.createElement("td");
+  maling.textContent = "Ny maling";
+  maling.setAttribute("contenteditable", "true");
+
+  const status = document.createElement("td");
+  status.textContent = "❌ Mangler ";
+  const sSelect = document.createElement("select");
+  sSelect.innerHTML = '<option value="✅ Har">✅ Har</option><option value="❌ Mangler" selected>❌ Mangler</option>';
+  sSelect.style.display = "inline-block";
+  sSelect.addEventListener("change", () => {
+    status.childNodes[0].nodeValue = sSelect.value + " ";
+    saveToLocalStorage();
+  });
+  status.appendChild(sSelect);
+
+  row.append(nr, kategori, brand, maling, status);
+  tbody.appendChild(row);
+
+  applyFilters();
+  saveToLocalStorage();
 }
 </script>
 </body>
