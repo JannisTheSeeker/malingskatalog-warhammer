@@ -1483,27 +1483,68 @@
     Endringer må lagres manuelt via GitHub.
    </small>
 </div>
+
 <script>
-   document.getElementById("searchInput").addEventListener("input", function () {
-  const filter = this.value.toLowerCase();
-  const rows = document.querySelectorAll("#paintTable tbody tr");
-  rows.forEach(row => {
-    let match = false;
-    row.querySelectorAll("td").forEach(cell => {
-      const text = cell.textContent.toLowerCase();
-      if (text.includes(filter)) {
-        match = true;
-        cell.innerHTML = cell.textContent.replace(
-          new RegExp(filter, "gi"),
-          match => `<mark style='background-color: #ffd700; color: #000;'>${match}</mark>`
-        );
-      } else {
-        cell.innerHTML = cell.textContent;
-      }
-    });
-    row.style.display = match ? "" : "none";
-  });
+let currentCategory = "ALL";
+let currentStatus = "ALL";
+let currentSearch = "";
+
+document.getElementById("searchInput").addEventListener("input", function () {
+    currentSearch = this.value.toLowerCase();
+    applyFilters();
 });
-  </script>
-</body>
+
+function filterCategory(category) {
+    currentCategory = category;
+    applyFilters();
+}
+
+function filterStatus(status) {
+    currentStatus = status;
+    applyFilters();
+}
+
+function applyFilters() {
+    const rows = document.querySelectorAll("#paintTable tbody tr");
+    rows.forEach(row => {
+        const cat = row.querySelector("td[data-label='Kategori']")?.textContent.trim().toUpperCase() || "";
+        const status = row.querySelector("td[data-label='Status']")?.textContent.trim() || "";
+        const text = row.textContent.toLowerCase();
+
+        const matchCategory = currentCategory === "ALL" || cat === currentCategory;
+        const matchStatus = currentStatus === "ALL" || status.includes(currentStatus);
+        const matchSearch = currentSearch === "" || text.includes(currentSearch);
+
+        row.style.display = (matchCategory && matchStatus && matchSearch) ? "" : "none";
+    });
+}
+
+function unlockEditing() {
+    const password = document.getElementById("editPassword").value;
+    const message = document.getElementById("unlockMessage");
+    if (password === "dinhemmeligekode") {
+        message.textContent = "Redigering aktivert.";
+    } else {
+        message.textContent = "Feil passord.";
+    }
+}
+
+function downloadCSV() {
+    const rows = document.querySelectorAll("#paintTable tr");
+    const csv = Array.from(rows).map(row =>
+        Array.from(row.querySelectorAll("th, td"))
+            .map(cell => '"' + cell.textContent.trim() + '"')
+            .join(',')
+    ).join("\n");
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    link.setAttribute("href", URL.createObjectURL(blob));
+    link.setAttribute("download", "malingskatalog.csv");
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+</script></body>
 </html>
