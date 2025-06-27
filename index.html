@@ -6,72 +6,105 @@
    Malingskatalog – Warhammer 40K
   </title>
   <style>
-   body {
-            background-color: #121212;
-            color: #f0f0f0;
-            font-family: 'Segoe UI', sans-serif;
-            margin: 1rem;
+   @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500&display=swap');
+
+        :root {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --accent-color: #ffd700;
+            --border-color: #333;
+            --input-bg: #1f1f1f;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 2rem;
         }
 
         h1 {
-            color: #ffd700;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        input[type="text"], input[type="password"] {
-            background-color: #222;
-            color: #fff;
-            border: 1px solid #555;
+        input[type="text"] {
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
             padding: 0.5rem;
             width: 100%;
             max-width: 400px;
             font-size: 1rem;
             margin-bottom: 1rem;
-            border-radius: 4px;
         }
 
-        button {
-            background-color: #333;
-            color: #ffd700;
-            border: 1px solid #666;
-            padding: 0.4rem 0.75rem;
-            margin: 0.2rem;
-            cursor: pointer;
-            border-radius: 4px;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #1e1e1e;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        th {
+            background-color: #2a2a2a;
+            color: var(--accent-color);
+        }
+
+        .har {
+            color: #00ff88;
             font-weight: bold;
         }
 
-        button:hover {
-            background-color: #444;
-        }
-
-        button.active {
-            background-color: #ffd700;
-            color: #000;
+        .mangler {
+            color: #ff4444;
+            font-weight: bold;
         }
 
         .swatch {
             display: inline-block;
             width: 16px;
             height: 16px;
-            margin-right: 8px;
-            border: 1px solid #000;
+            margin-right: 0.5rem;
+            border: 1px solid #aaa;
             vertical-align: middle;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-
-        th, td {
-            border: 1px solid #444;
-            padding: 0.5rem;
-            text-align: left;
-        }
-
-        th {
-            background-color: #222;
+        @media screen and (max-width: 600px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+                width: 100%;
+            }
+            thead {
+                display: none;
+            }
+            tr {
+                margin-bottom: 1rem;
+                background-color: #1e1e1e;
+                border: 1px solid var(--border-color);
+                padding: 1rem;
+            }
+            td {
+                text-align: right;
+                position: relative;
+                padding-left: 50%;
+            }
+            td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 0;
+                width: 50%;
+                padding-left: 1rem;
+                font-weight: bold;
+                text-align: left;
+                color: var(--accent-color);
+            }
         }
   </style>
  </head>
@@ -125,51 +158,88 @@
    <span id="unlockMessage" style="margin-left:1rem;color:#aaa;">
    </span>
   </div>
-  <div id="filterContainer" style="margin-bottom: 1rem;">
-   <button class="filter-btn" onclick="filterCategory('ALL')">
-    Alle
-   </button>
-   <button class="filter-btn" onclick="filterCategory('SPRAY')">
-    Spray
-   </button>
-   <button class="filter-btn" onclick="filterCategory('BASE')">
-    Base
-   </button>
-   <button class="filter-btn" onclick="filterCategory('LAYER')">
-    Layer
-   </button>
-   <button class="filter-btn" onclick="filterCategory('SHADE')">
-    Shade
-   </button>
-   <button class="filter-btn" onclick="filterCategory('CONTRAST')">
-    Contrast
-   </button>
-   <button class="filter-btn" onclick="filterCategory('TECHNICAL')">
-    Technical
-   </button>
+  <div id="filters" style="margin-bottom: 1.5rem;">
+   <div style="margin-bottom: 0.5rem;">
+    <strong style="color: #ffd700;">
+     Filtrer etter kategori:
+    </strong>
+    <br/>
+    <button class="filter-btn" onclick="filterCategory('ALL')">
+     Alle
+    </button>
+    <button class="filter-btn" onclick="filterCategory('SPRAY')">
+     Spray
+    </button>
+    <button class="filter-btn" onclick="filterCategory('BASE')">
+     Base
+    </button>
+    <button class="filter-btn" onclick="filterCategory('LAYER')">
+     Layer
+    </button>
+    <button class="filter-btn" onclick="filterCategory('SHADE')">
+     Shade
+    </button>
+    <button class="filter-btn" onclick="filterCategory('CONTRAST')">
+     Contrast
+    </button>
+    <button class="filter-btn" onclick="filterCategory('TECHNICAL')">
+     Technical
+    </button>
+   </div>
+   <div>
+    <strong style="color: #ffd700;">
+     Filtrer etter status:
+    </strong>
+    <br/>
+    <button class="status-btn" onclick="filterStatus('ALL')">
+     Alle
+    </button>
+    <button class="status-btn" onclick="filterStatus('✅ Har')">
+     Har
+    </button>
+    <button class="status-btn" onclick="filterStatus('❌ Mangler')">
+     Mangler
+    </button>
+   </div>
   </div>
   <style>
-   .filter-btn {
+   .filter-btn, .status-btn {
     background-color: #2a2a2a;
     color: #ffd700;
     border: 1px solid #ffd700;
     padding: 0.5rem 1rem;
-    margin: 0.25rem;
+    margin: 0.25rem 0.5rem 0.25rem 0;
     border-radius: 4px;
     cursor: pointer;
     font-size: 0.95rem;
   }
-  .filter-btn:hover {
+  .filter-btn:hover, .status-btn:hover {
     background-color: #ffd700;
     color: #2a2a2a;
   }
   </style>
   <script>
-   function filterCategory(category) {
+   let activeCategory = 'ALL';
+  let activeStatus = 'ALL';
+
+  function filterCategory(category) {
+    activeCategory = category;
+    applyFilters();
+  }
+
+  function filterStatus(status) {
+    activeStatus = status;
+    applyFilters();
+  }
+
+  function applyFilters() {
     const rows = document.querySelectorAll("#paintTable tbody tr");
     rows.forEach(row => {
-      const cat = row.querySelector("td").innerText.toUpperCase();
-      row.style.display = (category === "ALL" || cat === category.toUpperCase()) ? "" : "none";
+      const cat = row.querySelectorAll("td")[0]?.innerText.toUpperCase() || "";
+      const status = row.querySelectorAll("td")[2]?.innerText.trim() || "";
+      const categoryMatch = activeCategory === 'ALL' || cat === activeCategory;
+      const statusMatch = activeStatus === 'ALL' || status === activeStatus;
+      row.style.display = (categoryMatch && statusMatch) ? "" : "none";
     });
   }
   </script>
@@ -193,8 +263,6 @@
       BASE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #0d0d0d; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#000000">
       </span>
       Abaddon Black
@@ -208,8 +276,6 @@
       BASE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #ffb400; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#FFCC00">
       </span>
       Averland Sunset
@@ -223,8 +289,6 @@
       BASE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #916c41; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#A97444">
       </span>
       Balthasar Gold
@@ -238,8 +302,6 @@
       BASE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #a16a5e; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#A36C58">
       </span>
       Bugmans Glow
@@ -266,8 +328,6 @@
       BASE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #e6e6e6; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#F2F2F2">
       </span>
       Corax White
@@ -281,8 +341,6 @@
       BASE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #181818; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(198,41,145)">
       </span>
       Corvus Black
@@ -296,8 +354,6 @@
       BASE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #866192; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(204,236,23)">
       </span>
       Daemonette Hide
@@ -311,8 +367,6 @@
       BASE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #697e52; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#6B7755">
       </span>
       Death Guard Green
@@ -326,8 +380,6 @@
       BASE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #4b3a28; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#3A2E23">
       </span>
       Dryad Bark
@@ -354,8 +406,6 @@
       BASE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #7f8c8d; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(166,207,41)">
       </span>
       Iron Hands Steel
@@ -369,8 +419,6 @@
       BASE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #6b6b6b; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(81,106,74)">
       </span>
       Iron Warriors
@@ -384,8 +432,6 @@
       BASE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #f07900; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(95,61,150)">
       </span>
       Jokaero Orange
@@ -399,8 +445,6 @@
       BASE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #1c3b68; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#1C2E5B">
       </span>
       Kantor Blue
@@ -414,8 +458,6 @@
       BASE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #6a1f1c; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#58111A">
       </span>
       Khorne Red
@@ -429,8 +471,6 @@
       BASE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #8a8c8d; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#999999">
       </span>
       Leadbelcher
@@ -444,8 +484,6 @@
       BASE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #0e3a28; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#20362C">
       </span>
       Lupercal Green
@@ -459,8 +497,6 @@
       BASE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #274e86; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#1E3A77">
       </span>
       Macragge Blue
@@ -474,8 +510,6 @@
       BASE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #3f3f3f; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#555555">
       </span>
       Mechanicus Standard Grey
@@ -489,8 +523,6 @@
       BASE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #b92428; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#8B0000">
       </span>
       Mephiston Red
@@ -504,8 +536,6 @@
       BASE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #dbcd9e; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(111,196,114)">
       </span>
       Morghast Bone
@@ -519,8 +549,6 @@
       BASE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #6d4c31; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#6B4423">
       </span>
       Mournfang Brown
@@ -534,8 +562,6 @@
       BASE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #2e1e3a; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(161,102,158)">
       </span>
       Naggaroth Night
@@ -549,8 +575,6 @@
       BASE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #6e924f; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#6C9B2C">
       </span>
       Orruk Flesh
@@ -577,8 +601,6 @@
       BASE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #c39738; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#C7A740">
       </span>
       Retributor Armour
@@ -592,8 +614,6 @@
       BASE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #402e1e; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(81,96,65)">
       </span>
       Rhinox Hide
@@ -633,8 +653,6 @@
       BASE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #a55e2b; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#924E2E">
       </span>
       Screaming Bell
@@ -648,8 +666,6 @@
       BASE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #6e6243; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#635C48">
       </span>
       Steel Legion Drab
@@ -715,8 +731,6 @@
       BASE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #c2b280; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#C2B280">
       </span>
       Zandri Dust
@@ -730,8 +744,6 @@
       CONTRAST
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #f6c842; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#FFD700">
       </span>
       Iyanden Yellow
@@ -771,8 +783,6 @@
       CONTRAST
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #9a3056; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#A74176">
       </span>
       Volupus Pink
@@ -786,8 +796,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #c3c3c3; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#D0D0D0">
       </span>
       Administratum Grey
@@ -866,8 +874,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #d6a470; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#DEB7A0">
       </span>
       Cadian Fleshtone
@@ -881,8 +887,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #477abf; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#2B4E93">
       </span>
       Calgar Blue
@@ -909,8 +913,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #a5a5a5; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#888888">
       </span>
       Dawnstone
@@ -924,8 +926,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #c78454; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(50,143,107)">
       </span>
       Deathclaw Brown
@@ -939,8 +939,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #5a3226; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(111,209,192)">
       </span>
       Doombull Brown
@@ -954,8 +952,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #d14aad; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(122,202,236)">
       </span>
       Emperors Children
@@ -982,8 +978,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #e43a2f; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#C12126">
       </span>
       Evil Sunz Scarlet
@@ -997,8 +991,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #9bbfd9; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(115,25,248)">
       </span>
       Fenrisian Grey
@@ -1012,8 +1004,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #ff884a; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(143,102,230)">
       </span>
       Fire Dragon Bright
@@ -1027,8 +1017,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #fff75b; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#FFE800">
       </span>
       Flash Gitz Yellow
@@ -1042,8 +1030,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #f6b4c5; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#EECDE3">
       </span>
       Fulgrim Pink
@@ -1070,8 +1056,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #7356a2; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(145,28,167)">
       </span>
       Genestealer Purple
@@ -1137,8 +1121,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #b49d71; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(163,149,251)">
       </span>
       Karak Stone
@@ -1152,8 +1134,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #e7c7a1; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#F0C8A0">
       </span>
       Kislev Flesh
@@ -1193,8 +1173,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #a5c286; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#B0C26E">
       </span>
       Nurgling Green
@@ -1221,8 +1199,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #f5efdf; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(59,102,214)">
       </span>
       Pallid Wych Flesh
@@ -1236,8 +1212,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #fffb8d; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(167,158,154)">
       </span>
       Phalanx Yellow
@@ -1251,8 +1225,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #e28ca5; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#D67AB1">
       </span>
       Pink Horror
@@ -1266,8 +1238,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #7e9dad; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(202,185,196)">
       </span>
       Russ Grey
@@ -1281,8 +1251,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #f5f1c4; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#EFE6C4">
       </span>
       Screaming Skull
@@ -1309,8 +1277,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #965e3f; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(24,123,230)">
       </span>
       Skrag Brown
@@ -1324,8 +1290,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #bbb6cc; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(70,18,72)">
       </span>
       Slaanesh Grey
@@ -1391,8 +1355,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #c2a86f; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(75,115,75)">
       </span>
       Tallarn Sand
@@ -1406,8 +1368,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #47aba2; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#3EB5C4">
       </span>
       Temple Guard Blue
@@ -1434,8 +1394,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #f96b1c; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(73,68,27)">
       </span>
       Troll Slayer Orange
@@ -1449,8 +1407,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #cdd6db; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(123,204,199)">
       </span>
       Ulthuan Grey
@@ -1464,8 +1420,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #d7cfa3; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(194,38,86)">
       </span>
       Ushabti Bone
@@ -1479,8 +1433,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #82b96b; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(53,100,10)">
       </span>
       Warboss Green
@@ -1507,8 +1459,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #ffffff; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(121,129,186)">
       </span>
       White Scar
@@ -1522,8 +1472,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #ff5340; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(163,173,61)">
       </span>
       Wild Rider Red
@@ -1537,8 +1485,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #4b2e6f; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#462D75">
       </span>
       Xereus Purple
@@ -1552,8 +1498,6 @@
       LAYER
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #f7d560; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(97,56,67)">
       </span>
       Yriel Yellow
@@ -1580,8 +1524,6 @@
       SHADE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #3e2f25; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#4B3621">
       </span>
       Agrax Earthshade
@@ -1595,8 +1537,6 @@
       SHADE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #5c6941; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(242,82,183)">
       </span>
       Athonian Camoshade
@@ -1610,8 +1550,6 @@
       SHADE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #4a6648; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#4A775C">
       </span>
       Biel Tan Green
@@ -1690,8 +1628,6 @@
       SHADE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #5b3b75; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#422153">
       </span>
       Druchii Violet
@@ -1705,8 +1641,6 @@
       SHADE
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #212121; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#1E1E1E">
       </span>
       Nuln Oil
@@ -1824,8 +1758,6 @@
       TECHNICAL
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #f05a28; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:rgb(1,92,93)">
       </span>
       Squig Orange
@@ -1852,8 +1784,6 @@
       TECHNICAL
      </td>
      <td data-label="Maling">
-      <div class="swatch" style="background-color: #e6e8e8; width: 16px; height: 16px; display: inline-block; margin-right: 8px; border: 1px solid #000; vertical-align: middle;">
-      </div>
       <span class="swatch" style="background-color:#D8D8D8">
       </span>
       Stormhost Silver
