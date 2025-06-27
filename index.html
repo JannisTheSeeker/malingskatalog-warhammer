@@ -125,6 +125,7 @@
 <div style="margin: 1rem 0;">
     <input type="password" id="editPassword" placeholder="🔒 Skriv inn passord for å redigere" style="padding: 0.5rem; max-width: 300px;">
     <button onclick="unlockEditing()">Lås opp redigering</button>
+<span id="unlockMessage" style="margin-left:1rem;color:#aaa;"></span>
 </div>
 
 <table id="paintTable">
@@ -348,11 +349,15 @@
     }
 
 
+    
     let editingUnlocked = false;
     function unlockEditing() {
         const pw = document.getElementById("editPassword").value;
+        const msg = document.getElementById("unlockMessage");
         if (pw === "Hansa") {
             editingUnlocked = true;
+            msg.innerText = "✅ Redigering aktivert!";
+            msg.style.color = "#00ff88";
             document.querySelectorAll("#paintTable td").forEach(cell => {
                 cell.addEventListener("click", () => {
                     if (!editingUnlocked) return;
@@ -366,6 +371,21 @@
                     input.addEventListener("blur", () => {
                         cell.innerText = input.value || original;
                     });
+                    input.addEventListener("keydown", e => {
+                        if (e.key === "Enter") {
+                            input.blur();
+                        } else if (e.key === "Escape") {
+                            cell.innerText = original;
+                        }
+                    });
+                });
+            });
+        } else {
+            msg.innerText = "❌ Feil passord!";
+            msg.style.color = "#ff4444";
+        }
+    }
+);
                     input.addEventListener("keydown", e => {
                         if (e.key === "Enter") {
                             input.blur();
