@@ -5,107 +5,74 @@
     <meta charset="UTF-8">
     <title>Malingskatalog – Warhammer 40K</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500&display=swap');
-
-        :root {
-            --bg-color: #121212;
-            --text-color: #e0e0e0;
-            --accent-color: #ffd700;
-            --border-color: #333;
-            --input-bg: #1f1f1f;
-        }
-
         body {
-            font-family: 'Rajdhani', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            padding: 2rem;
+            background-color: #121212;
+            color: #f0f0f0;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 1rem;
         }
 
         h1 {
-            color: var(--accent-color);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            color: #ffd700;
         }
 
-        input[type="text"] {
-            background-color: var(--input-bg);
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
+        input[type="text"], input[type="password"] {
+            background-color: #222;
+            color: #fff;
+            border: 1px solid #555;
             padding: 0.5rem;
             width: 100%;
             max-width: 400px;
             font-size: 1rem;
             margin-bottom: 1rem;
+            border-radius: 4px;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: #1e1e1e;
-        }
-
-        th, td {
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            text-align: left;
-        }
-
-        th {
-            background-color: #2a2a2a;
-            color: var(--accent-color);
-        }
-
-        .har {
-            color: #00ff88;
+        button {
+            background-color: #333;
+            color: #ffd700;
+            border: 1px solid #666;
+            padding: 0.4rem 0.75rem;
+            margin: 0.2rem;
+            cursor: pointer;
+            border-radius: 4px;
             font-weight: bold;
         }
 
-        .mangler {
-            color: #ff4444;
-            font-weight: bold;
+        button:hover {
+            background-color: #444;
+        }
+
+        button.active {
+            background-color: #ffd700;
+            color: #000;
         }
 
         .swatch {
             display: inline-block;
             width: 16px;
             height: 16px;
-            margin-right: 0.5rem;
-            border: 1px solid #aaa;
+            margin-right: 8px;
+            border: 1px solid #000;
             vertical-align: middle;
         }
 
-        @media screen and (max-width: 600px) {
-            table, thead, tbody, th, td, tr {
-                display: block;
-                width: 100%;
-            }
-            thead {
-                display: none;
-            }
-            tr {
-                margin-bottom: 1rem;
-                background-color: #1e1e1e;
-                border: 1px solid var(--border-color);
-                padding: 1rem;
-            }
-            td {
-                text-align: right;
-                position: relative;
-                padding-left: 50%;
-            }
-            td::before {
-                content: attr(data-label);
-                position: absolute;
-                left: 0;
-                width: 50%;
-                padding-left: 1rem;
-                font-weight: bold;
-                text-align: left;
-                color: var(--accent-color);
-            }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
         }
-    </style>
+
+        th, td {
+            border: 1px solid #444;
+            padding: 0.5rem;
+            text-align: left;
+        }
+
+        th {
+            background-color: #222;
+        }
+</style>
 </head>
 <body>
     <h1>🎨 Malingskatalog – Warhammer 40K</h1>
@@ -274,85 +241,107 @@
 
     
 
+
+
+
 <script>
-    let editingUnlocked = false;
+let editingUnlocked = false;
 
-    function unlockEditing() {
-        const pw = document.getElementById("editPassword").value;
-        const msg = document.getElementById("unlockMessage");
-        if (pw === "Hansa") {
-            editingUnlocked = true;
-            msg.innerText = "✅ Redigering aktivert!";
-            msg.style.color = "#00ff88";
-            enableEditing();
-        } else {
-            msg.innerText = "❌ Feil passord!";
-            msg.style.color = "#ff4444";
-        }
+function unlockEditing() {
+    const pw = document.getElementById("editPassword").value;
+    const msg = document.getElementById("unlockMessage");
+    if (pw === "Hansa") {
+        editingUnlocked = true;
+        msg.innerText = "✅ Redigering aktivert!";
+        msg.style.color = "#00ff88";
+        enableEditing();
+    } else {
+        msg.innerText = "❌ Feil passord!";
+        msg.style.color = "#ff4444";
     }
+}
 
-    function enableEditing() {
-        document.querySelectorAll("#paintTable td").forEach(cell => {
-            cell.onclick = function () {
-                if (!editingUnlocked || cell.querySelector("input")) return;
-                const original = cell.innerText;
-                const input = document.createElement("input");
-                input.value = original;
-                input.style.width = "100%";
-                cell.innerText = "";
-                cell.appendChild(input);
-                input.focus();
-                input.onblur = () => cell.innerText = input.value || original;
-                input.onkeydown = e => {
-                    if (e.key === "Enter") input.blur();
-                    if (e.key === "Escape") cell.innerText = original;
-                };
+function enableEditing() {
+    document.querySelectorAll("#paintTable td").forEach(cell => {
+        cell.onclick = function () {
+            if (!editingUnlocked || cell.querySelector("input")) return;
+            const original = cell.innerText;
+            const input = document.createElement("input");
+            input.value = original;
+            input.style.width = "100%";
+            cell.innerText = "";
+            cell.appendChild(input);
+            input.focus();
+            input.onblur = () => cell.innerText = input.value || original;
+            input.onkeydown = e => {
+                if (e.key === "Enter") input.blur();
+                if (e.key === "Escape") cell.innerText = original;
             };
-        });
-    }
+        };
+    });
+}
 
-    function filterCategory(category) {
+function filterCategory(category) {
+    setActiveButton("filterButtons", category);
+    const rows = document.querySelectorAll("#paintTable tbody tr");
+    rows.forEach(row => {
+        const cat = row.querySelector("td");
+        row.style.display = (category === "ALL" || cat.textContent.trim() === category) ? "" : "none";
+    });
+}
+
+function filterStatus(status) {
+    setActiveButton("statusButtons", status);
+    const rows = document.querySelectorAll("#paintTable tbody tr");
+    rows.forEach(row => {
+        const statusCell = row.querySelector("td:last-child");
+        row.style.display = (status === "ALL" || statusCell.textContent.includes(status)) ? "" : "none";
+    });
+}
+
+function setActiveButton(containerId, value) {
+    const buttons = document.querySelectorAll(`#${containerId} button`);
+    buttons.forEach(btn => {
+        btn.classList.remove("active");
+        if (btn.innerText.includes(value) || (value === "ALL" && btn.innerText.includes("Vis alle"))) {
+            btn.classList.add("active");
+        }
+    });
+}
+
+function downloadCSV() {
+    const rows = document.querySelectorAll("#paintTable tr");
+    let csvContent = "";
+    rows.forEach(row => {
+        const cols = row.querySelectorAll("td, th");
+        const rowData = [];
+        cols.forEach(col => {
+            rowData.push(col.innerText.replace(/\n/g, "").trim());
+        });
+        csvContent += rowData.join(",") + "\n";
+    });
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "malingskatalog.csv");
+    link.click();
+}
+
+window.onload = function () {
+    document.getElementById("editPassword").addEventListener("keydown", function(e) {
+        if (e.key === "Enter") unlockEditing();
+    });
+
+    document.getElementById("searchInput").addEventListener("input", function() {
+        const filter = this.value.toLowerCase();
         const rows = document.querySelectorAll("#paintTable tbody tr");
         rows.forEach(row => {
-            const cat = row.querySelector("td");
-            row.style.display = (category === "ALL" || cat.textContent.trim() === category) ? "" : "none";
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(filter) ? "" : "none";
         });
-    }
-
-    function filterStatus(status) {
-        const rows = document.querySelectorAll("#paintTable tbody tr");
-        rows.forEach(row => {
-            const statusCell = row.querySelector("td:last-child");
-            row.style.display = (status === "ALL" || statusCell.textContent.includes(status)) ? "" : "none";
-        });
-    }
-
-    function downloadCSV() {
-        const rows = document.querySelectorAll("#paintTable tr");
-        let csvContent = "";
-        rows.forEach(row => {
-            const cols = row.querySelectorAll("td, th");
-            const rowData = [];
-            cols.forEach(col => {
-                rowData.push(col.innerText.replace(/\n/g, "").trim());
-            });
-            csvContent += rowData.join(",") + "\n";
-        });
-        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.setAttribute("href", url);
-        link.setAttribute("download", "malingskatalog.csv");
-        link.click();
-    }
-
-    window.onload = function () {
-        document.getElementById("editPassword").addEventListener("keydown", function(e) {
-            if (e.key === "Enter") {
-                unlockEditing();
-            }
-        });
-    };
+    });
+};
 </script>
 
 </body>
