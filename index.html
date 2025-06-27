@@ -1513,78 +1513,72 @@
     Endringer må lagres manuelt via GitHub.
    </small>
 </div>
-<script>
-let currentCategory = "ALL";
-let currentStatus = "ALL";
-let currentSearch = "";
 
-document.getElementById("searchInput").addEventListener("input", function () {
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  let currentCategory = "ALL";
+  let currentStatus = "ALL";
+  let currentSearch = "";
+
+  document.getElementById("searchInput").addEventListener("input", function () {
     currentSearch = this.value.toLowerCase();
     applyFilters();
-});
+  });
 
-
-function setActiveButton(groupId, value) {
-    const buttons = document.querySelectorAll(`#${groupId} button`);
-    buttons.forEach(btn => {
-        if (btn.textContent.includes(value) || value === "ALL" && btn.textContent.includes("Vis alle")) {
-            btn.classList.add("active");
-        } else {
-            btn.classList.remove("active");
-        }
-    });
-}
-
-function filterCategory(category) {
+  window.filterCategory = function(category) {
     currentCategory = category;
     setActiveButton("filterButtons", category);
     applyFilters();
-}
-    currentCategory = category;
-    applyFilters();
-}
+  }
 
-
-function filterStatus(status) {
+  window.filterStatus = function(status) {
     currentStatus = status;
     setActiveButton("statusButtons", status);
     applyFilters();
-}
-    currentStatus = status;
-    applyFilters();
-}
+  }
 
-function applyFilters() {
+  function setActiveButton(groupId, value) {
+    const buttons = document.querySelectorAll(`#${groupId} button`);
+    buttons.forEach(btn => {
+      if (btn.textContent.includes(value) || (value === "ALL" && btn.textContent.includes("alle"))) {
+        btn.classList.add("active");
+      } else {
+        btn.classList.remove("active");
+      }
+    });
+  }
+
+  function applyFilters() {
     const rows = document.querySelectorAll("#paintTable tbody tr");
     rows.forEach(row => {
-        const cat = row.querySelector("td[data-label='Kategori']")?.textContent.trim().toUpperCase() || "";
-        const status = row.querySelector("td[data-label='Status']")?.textContent.trim() || "";
-        const text = row.textContent.toLowerCase();
+      const cat = row.querySelector("td[data-label='Kategori']")?.textContent.trim().toUpperCase() || "";
+      const status = row.querySelector("td[data-label='Status']")?.textContent.trim() || "";
+      const text = row.textContent.toLowerCase();
 
-        const matchCategory = currentCategory === "ALL" || cat === currentCategory;
-        const matchStatus = currentStatus === "ALL" || status.includes(currentStatus);
-        const matchSearch = currentSearch === "" || text.includes(currentSearch);
+      const matchCategory = currentCategory === "ALL" || cat === currentCategory;
+      const matchStatus = currentStatus === "ALL" || status.includes(currentStatus);
+      const matchSearch = currentSearch === "" || text.includes(currentSearch);
 
-        row.style.display = (matchCategory && matchStatus && matchSearch) ? "" : "none";
+      row.style.display = (matchCategory && matchStatus && matchSearch) ? "" : "none";
     });
-}
+  }
 
-function unlockEditing() {
+  window.unlockEditing = function() {
     const password = document.getElementById("editPassword").value;
     const message = document.getElementById("unlockMessage");
     if (password === "dinhemmeligekode") {
-        message.textContent = "Redigering aktivert.";
+      message.textContent = "Redigering aktivert.";
     } else {
-        message.textContent = "Feil passord.";
+      message.textContent = "Feil passord.";
     }
-}
+  }
 
-function downloadCSV() {
+  window.downloadCSV = function() {
     const rows = document.querySelectorAll("#paintTable tr");
     const csv = Array.from(rows).map(row =>
-        Array.from(row.querySelectorAll("th, td"))
-            .map(cell => '"' + cell.textContent.trim() + '"')
-            .join(',')
+      Array.from(row.querySelectorAll("th, td"))
+        .map(cell => '"' + cell.textContent.trim() + '"')
+        .join(',')
     ).join("\n");
 
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -1595,6 +1589,8 @@ function downloadCSV() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-}
-</script></body>
+  }
+});
+</script>
+</body>
 </html>
